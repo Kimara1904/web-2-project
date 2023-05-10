@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Web_2_Online_Shop.Infrastructure;
+using Web_2_Online_Shop.Interfaces;
+using Web_2_Online_Shop.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ShopDataBaseContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ShopDB")));
+builder.Services.AddScoped<DbContext, ShopDataBaseContext>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 
 var app = builder.Build();
 

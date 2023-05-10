@@ -12,6 +12,7 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
             builder.Property(a => a.Name).IsRequired().HasMaxLength(20);
             builder.Property(a => a.Price).IsRequired();
             builder.Property(a => a.Amount).IsRequired();
+            builder.Property(a => a.IsDeleted).HasDefaultValue(false);
         }
     }
 }

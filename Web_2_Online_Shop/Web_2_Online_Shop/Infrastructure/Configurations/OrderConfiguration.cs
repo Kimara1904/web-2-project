@@ -12,6 +12,7 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
             builder.Property(o => o.Address).HasMaxLength(40).IsRequired();
             builder.Property(o => o.DeliveryTime).IsRequired();
             builder.HasMany(o => o.Articles).WithOne(oi => oi.Order).HasForeignKey(o => o.ArticleId);
+            builder.Property(a => a.IsDeleted).HasDefaultValue(false);
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web_2_Online_Shop.Infrastructure;
 
@@ -11,9 +12,11 @@ using Web_2_Online_Shop.Infrastructure;
 namespace Web_2_Online_Shop.Migrations
 {
     [DbContext(typeof(ShopDataBaseContext))]
-    partial class ShopDataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230510112041_DeletePropertyMigration")]
+    partial class DeletePropertyMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,14 +36,14 @@ namespace Web_2_Online_Shop.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<int>("MyProperty")
                         .HasColumnType("int");
@@ -72,11 +75,11 @@ namespace Web_2_Online_Shop.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("DeliveryTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -97,7 +100,7 @@ namespace Web_2_Online_Shop.Migrations
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
                     b.Property<int>("OrderId")
@@ -126,6 +129,9 @@ namespace Web_2_Online_Shop.Migrations
                     b.Property<DateTime>("Birth")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -135,9 +141,6 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");

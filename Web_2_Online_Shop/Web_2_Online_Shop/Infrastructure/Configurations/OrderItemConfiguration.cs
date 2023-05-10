@@ -10,6 +10,7 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
         {
             builder.HasKey(oi => oi.Id);
             builder.HasOne(oi => oi.Order).WithMany(o => o.Articles).HasForeignKey(oi => oi.OrderId);
+            builder.Property(a => a.IsDeleted).HasDefaultValue(false);
         }
     }
 }
