@@ -12,8 +12,8 @@ using Web_2_Online_Shop.Infrastructure;
 namespace Web_2_Online_Shop.Migrations
 {
     [DbContext(typeof(ShopDataBaseContext))]
-    [Migration("20230509205309_RestModelsMigration")]
-    partial class RestModelsMigration
+    [Migration("20230511134624_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,9 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("MyProperty")
                         .HasColumnType("int");
@@ -75,6 +78,9 @@ namespace Web_2_Online_Shop.Migrations
                     b.Property<DateTime>("DeliveryTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("Orders");
@@ -93,6 +99,9 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -129,6 +138,9 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");

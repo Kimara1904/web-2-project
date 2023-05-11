@@ -20,8 +20,8 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
             builder.Property(u => u.LastName).HasMaxLength(30);
             builder.Property(u => u.Address).HasMaxLength(40);
             builder.Property(u => u.Role).HasConversion(new EnumToStringConverter<UserRoles>());
-            builder.HasData(new User { Id = 1, Email = "admin", Username = "Admin", Password = "Adm1n!", Role = UserRoles.Admin });
             builder.Property(a => a.IsDeleted).HasDefaultValue(false);
+            builder.HasData(new User { Id = 1, Email = "admin@admin.com", Username = "Admin", Password = "Adm1n!", Role = UserRoles.Admin });
         }
     }
 }

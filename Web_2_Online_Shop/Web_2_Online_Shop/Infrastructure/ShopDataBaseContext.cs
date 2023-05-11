@@ -18,6 +18,7 @@ namespace Web_2_Online_Shop.Infrastructure
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ShopDataBaseContext).Assembly);
         }
     }
 }

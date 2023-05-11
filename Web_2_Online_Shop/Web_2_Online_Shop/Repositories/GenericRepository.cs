@@ -25,7 +25,8 @@ namespace Web_2_Online_Shop.Repositories
 
         public async Task<IQueryable<T>> GetAllAsync()
         {
-            return await Task.FromResult(_context.Set<T>().AsNoTracking());
+            var results = await _context.Set<T>().AsNoTracking().ToListAsync();
+            return results.AsQueryable();
         }
 
         public async Task Insert(T entity)
