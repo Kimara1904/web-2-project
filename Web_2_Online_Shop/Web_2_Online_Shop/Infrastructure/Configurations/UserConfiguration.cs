@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web_2_Online_Shop.Enums;
@@ -15,13 +16,20 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
             builder.HasIndex(u => u.Username).IsUnique();
             builder.Property(u => u.Email).HasMaxLength(25);
             builder.HasIndex(u => u.Email).IsUnique();
-            builder.Property(u => u.Password).HasMaxLength(30).IsRequired();
+            builder.Property(u => u.Password).IsRequired();
             builder.Property(u => u.FirstName).HasMaxLength(30);
             builder.Property(u => u.LastName).HasMaxLength(30);
             builder.Property(u => u.Address).HasMaxLength(40);
             builder.Property(u => u.Role).HasConversion(new EnumToStringConverter<UserRoles>());
             builder.Property(a => a.IsDeleted).HasDefaultValue(false);
-            builder.HasData(new User { Id = 1, Email = "admin@admin.com", Username = "Admin", Password = "Adm1n!", Role = UserRoles.Admin });
+            builder.HasData(new User
+            {
+                Id = 1,
+                Email = "admin@admin.com",
+                Username = "Admin",
+                Password = new PasswordHasher<User>().HashPassword(null, "Adm1n!"),
+                Role = UserRoles.Admin
+            });
         }
     }
 }

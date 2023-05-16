@@ -1,14 +1,18 @@
 using AutoMapper;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
 using Web_2_Online_Shop.ExceptionHandler;
 using Web_2_Online_Shop.Infrastructure;
 using Web_2_Online_Shop.Interfaces;
 using Web_2_Online_Shop.Mapper;
+using Web_2_Online_Shop.Models;
 using Web_2_Online_Shop.Repositories;
 using Web_2_Online_Shop.Services;
 using Web_2_Online_Shop.Validators;
@@ -22,7 +26,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Web store API", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Library API", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -32,6 +36,8 @@ builder.Services.AddSwaggerGen(option =>
         BearerFormat = "JWT",
         Scheme = "Bearer"
     });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    option.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -43,7 +49,7 @@ builder.Services.AddSwaggerGen(option =>
                     Id="Bearer"
                 }
             },
-            Array.Empty<string>()
+            new string[]{}
         }
     });
 });
@@ -62,7 +68,8 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ExceptionHandler>();
-
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<BaseValidator>();
 
 var configuration = new ConfigurationBuilder()

@@ -44,9 +44,6 @@ namespace Web_2_Online_Shop.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<int>("MyProperty")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -55,7 +52,12 @@ namespace Web_2_Online_Shop.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<int>("SellerId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Articles");
                 });
@@ -73,6 +75,9 @@ namespace Web_2_Online_Shop.Migrations
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
+                    b.Property<int>("BuyerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
@@ -84,7 +89,12 @@ namespace Web_2_Online_Shop.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
 
                     b.ToTable("Orders");
                 });
@@ -158,8 +168,7 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -169,6 +178,9 @@ namespace Web_2_Online_Shop.Migrations
                         .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<int>("Verificated")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -187,24 +199,47 @@ namespace Web_2_Online_Shop.Migrations
                             Birth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@admin.com",
                             IsDeleted = false,
-                            Password = "Adm1n!",
+                            Password = "AQAAAAEAACcQAAAAEFw9KdY9h/vg/k6oKBSGZed/iqvqI2DlNkGuHvZVVjZYLHIz+5gHV2s88DZ5OB59jg==",
                             Role = "Admin",
-                            Username = "Admin"
+                            Username = "Admin",
+                            Verificated = 0
                         });
+                });
+
+            modelBuilder.Entity("Web_2_Online_Shop.Models.Article", b =>
+                {
+                    b.HasOne("Web_2_Online_Shop.Models.User", "Seller")
+                        .WithMany("Articles")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("Web_2_Online_Shop.Models.Order", b =>
+                {
+                    b.HasOne("Web_2_Online_Shop.Models.User", "Buyer")
+                        .WithMany("Orders")
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.OrderItem", b =>
                 {
                     b.HasOne("Web_2_Online_Shop.Models.Article", "Article")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Web_2_Online_Shop.Models.Order", "Order")
-                        .WithMany("Articles")
+                        .WithMany("Items")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Article");
@@ -212,9 +247,21 @@ namespace Web_2_Online_Shop.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("Web_2_Online_Shop.Models.Article", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("Web_2_Online_Shop.Models.Order", b =>
                 {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Web_2_Online_Shop.Models.User", b =>
+                {
                     b.Navigation("Articles");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

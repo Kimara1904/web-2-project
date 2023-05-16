@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,18 +16,20 @@ namespace Web_2_Online_Shop.Services
         private readonly IRepositoryWrapper _repository;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
-        public AuthenticationService(IRepositoryWrapper repository, IConfiguration configuration, IMapper mapper)
+        public AuthenticationService(IRepositoryWrapper repository, IConfiguration configuration, IMapper mapper, IPasswordHasher<User> passwordHasher)
         {
             _repository = repository;
             _configuration = configuration;
             _mapper = mapper;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<string> Login(string email, string password)
         {
             var users = await _repository._userRepository.GetAllAsync();
-            User? user = users.Where(u => u.Email == email && u.Password == password).FirstOrDefault() ?? throw new NotFoundException(string.Format("User with email: {0} and password: {1} doesn't exists", email, password));
+            User? user = users.Where(u => u.Email == email && _passwordHasher.VerifyHashedPassword(u, u.Password, password) == PasswordVerificationResult.Success).FirstOrDefault() ?? throw new NotFoundException(string.Format("User with email: {0} and password: {1} doesn't exists", email, password));
 
             var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"] ?? "default"),
@@ -67,6 +70,11 @@ namespace Web_2_Online_Shop.Services
             }
 
             User user = _mapper.Map<User>(userInfo);
+
+            var result = _passwordHasher.HashPassword(user, userInfo.Password);
+
+            user.Password = result;
+
             await _repository._userRepository.Insert(user);
             await _repository.SaveChanges();
         }

@@ -1,6 +1,9 @@
 ﻿namespace Web_2_Online_Shop.Enums
 {
-    public class VerificatedStates
+    public enum VerificatedStates
     {
+        Wait,
+        Accepted,
+        Denied
     }
 }

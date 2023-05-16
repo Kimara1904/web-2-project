@@ -12,7 +12,7 @@ using Web_2_Online_Shop.Infrastructure;
 namespace Web_2_Online_Shop.Migrations
 {
     [DbContext(typeof(ShopDataBaseContext))]
-    [Migration("20230511134624_InitialMigration")]
+    [Migration("20230516214039_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -43,19 +43,24 @@ namespace Web_2_Online_Shop.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("MyProperty")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<int>("SellerId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Articles");
                 });
@@ -70,7 +75,11 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<int>("BuyerId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
@@ -79,9 +88,16 @@ namespace Web_2_Online_Shop.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
 
                     b.ToTable("Orders");
                 });
@@ -101,7 +117,9 @@ namespace Web_2_Online_Shop.Migrations
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -124,55 +142,107 @@ namespace Web_2_Online_Shop.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.Property<DateTime>("Birth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Username")
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<int>("Verificated")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Birth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@admin.com",
+                            IsDeleted = false,
+                            Password = "AQAAAAEAACcQAAAAEFw9KdY9h/vg/k6oKBSGZed/iqvqI2DlNkGuHvZVVjZYLHIz+5gHV2s88DZ5OB59jg==",
+                            Role = "Admin",
+                            Username = "Admin",
+                            Verificated = 0
+                        });
+                });
+
+            modelBuilder.Entity("Web_2_Online_Shop.Models.Article", b =>
+                {
+                    b.HasOne("Web_2_Online_Shop.Models.User", "Seller")
+                        .WithMany("Articles")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("Web_2_Online_Shop.Models.Order", b =>
+                {
+                    b.HasOne("Web_2_Online_Shop.Models.User", "Buyer")
+                        .WithMany("Orders")
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.OrderItem", b =>
                 {
                     b.HasOne("Web_2_Online_Shop.Models.Article", "Article")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Web_2_Online_Shop.Models.Order", "Order")
-                        .WithMany("Articles")
+                        .WithMany("Items")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Article");
@@ -180,9 +250,21 @@ namespace Web_2_Online_Shop.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("Web_2_Online_Shop.Models.Article", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("Web_2_Online_Shop.Models.Order", b =>
                 {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Web_2_Online_Shop.Models.User", b =>
+                {
                     b.Navigation("Articles");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
