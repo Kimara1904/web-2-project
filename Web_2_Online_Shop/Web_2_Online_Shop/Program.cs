@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +11,7 @@ using Web_2_Online_Shop.Interfaces;
 using Web_2_Online_Shop.Mapper;
 using Web_2_Online_Shop.Repositories;
 using Web_2_Online_Shop.Services;
+using Web_2_Online_Shop.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +62,8 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ExceptionHandler>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<BaseValidator>();
 
 var configuration = new ConfigurationBuilder()
         .SetBasePath(builder.Environment.ContentRootPath)
