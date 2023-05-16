@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using System.Text;
 using Web_2_Online_Shop.ExceptionHandler;
 using Web_2_Online_Shop.Infrastructure;
 using Web_2_Online_Shop.Interfaces;
+using Web_2_Online_Shop.Mapper;
 using Web_2_Online_Shop.Repositories;
 using Web_2_Online_Shop.Services;
 
@@ -43,6 +45,15 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new UserProfile());
+});
+
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+
 builder.Services.AddDbContext<ShopDataBaseContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("ShopDB")));
 builder.Services.AddScoped<DbContext, ShopDataBaseContext>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,11 +14,13 @@ namespace Web_2_Online_Shop.Services
     {
         private readonly IRepositoryWrapper _repository;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public AuthenticationService(IRepositoryWrapper repository, IConfiguration configuration)
+        public AuthenticationService(IRepositoryWrapper repository, IConfiguration configuration, IMapper mapper)
         {
             _repository = repository;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<string> Login(string email, string password)
@@ -63,7 +66,9 @@ namespace Web_2_Online_Shop.Services
                 throw new ConflictException(string.Format("User with username: {0} already exists.", userInfo.Username));
             }
 
-            //Adding new User
+            User user = _mapper.Map<User>(userInfo);
+            await _repository._userRepository.Insert(user);
+            await _repository.SaveChanges();
         }
     }
 }
