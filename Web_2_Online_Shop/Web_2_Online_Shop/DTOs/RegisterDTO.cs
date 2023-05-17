@@ -1,6 +1,4 @@
-﻿using Web_2_Online_Shop.Enums;
-
-namespace Web_2_Online_Shop.DTOs
+﻿namespace Web_2_Online_Shop.DTOs
 {
     public class RegisterDTO
     {
@@ -11,7 +9,7 @@ namespace Web_2_Online_Shop.DTOs
         public string LastName { get; set; } = null!;
         public DateTime BirthDate { get; set; }
         public string Address { get; set; } = null!;
-        public UserRoles Role { get; set; }
+        public string Role { get; set; } = null!;
         public byte[]? Image { get; set; }
     }
 }
