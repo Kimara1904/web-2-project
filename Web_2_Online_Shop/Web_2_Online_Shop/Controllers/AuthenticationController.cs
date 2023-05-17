@@ -18,10 +18,10 @@ namespace Web_2_Online_Shop.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> Login(LoginDTO loginUser)
+        public async Task<ActionResult<TokenDTO>> Login(LoginDTO loginUser)
         {
             string token = await _userService.Login(loginUser.Email, loginUser.Password);
-            return Ok(token);
+            return Ok(new TokenDTO { Token = token });
         }
 
         [HttpPost("register")]
