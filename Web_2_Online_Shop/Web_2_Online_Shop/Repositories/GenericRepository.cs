@@ -20,7 +20,7 @@ namespace Web_2_Online_Shop.Repositories
 
         public async Task<T?> FindAsync(int id)
         {
-            return await _context.Set<T>().FindAsync();
+            return await _context.Set<T>().FindAsync(id);
         }
 
         public async Task<IQueryable<T>> GetAllAsync()

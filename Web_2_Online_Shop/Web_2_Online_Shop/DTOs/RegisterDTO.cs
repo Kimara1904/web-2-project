@@ -10,6 +10,5 @@
         public DateTime BirthDate { get; set; }
         public string Address { get; set; } = null!;
         public string Role { get; set; } = null!;
-        public byte[]? Image { get; set; }
     }
 }
