@@ -17,12 +17,28 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize]
-        [HttpPatch]
-        public async Task<ActionResult<UserDTO>> EditMyProfile(EditUserDTO newUserInfos)
+        [HttpGet("image")]
+        public async Task<ActionResult> GetMyImage()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
-            var result = await _userService.EditMyProfile(id, newUserInfos);
+            byte[] image = await _userService.GetMyImage(id);
 
+            return File(image, "image/*");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("unverified")]
+        public async Task<ActionResult<List<UserDTO>>> GetUnverifiedSellers()
+        {
+            var result = await _userService.GetUnverifiedSellers();
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("verified")]
+        public async Task<ActionResult<List<UserDTO>>> GetVerifiedSellers()
+        {
+            var result = await _userService.GetVerifiedSellers();
             return Ok(result);
         }
 
@@ -36,14 +52,22 @@ namespace Web_2_Online_Shop.Controllers
             return Ok("Image successfully uploaded");
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPut("verified")]
+        public async Task<ActionResult> VerifyUser(UserVerifyDTO userVerify)
+        {
+            await _userService.VerifySeller(userVerify);
+            return Ok(string.Format("Successfully verified seller with id: {0}", userVerify.Id));
+        }
+
         [Authorize]
-        [HttpGet("image")]
-        public async Task<ActionResult> GetMyImage()
+        [HttpPatch]
+        public async Task<ActionResult<UserDTO>> EditMyProfile(EditUserDTO newUserInfos)
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
-            byte[] image = await _userService.GetMyImage(id);
+            var result = await _userService.EditMyProfile(id, newUserInfos);
 
-            return File(image, "image/*");
+            return Ok(result);
         }
     }
 }

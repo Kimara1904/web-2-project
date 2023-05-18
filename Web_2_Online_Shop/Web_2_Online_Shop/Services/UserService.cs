@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Web_2_Online_Shop.DTOs;
+using Web_2_Online_Shop.Enums;
 using Web_2_Online_Shop.ExceptionHandler.Exceptions;
 using Web_2_Online_Shop.Interfaces;
 using Web_2_Online_Shop.Models;
@@ -12,12 +13,14 @@ namespace Web_2_Online_Shop.Services
         private readonly IRepositoryWrapper _repository;
         private readonly IPasswordHasher<User> _passwordHasher;
         private readonly IMapper _mapper;
+        private readonly IMailService _mailService;
 
-        public UserService(IRepositoryWrapper repository, IPasswordHasher<User> passwordHasher, IMapper mapper)
+        public UserService(IRepositoryWrapper repository, IPasswordHasher<User> passwordHasher, IMapper mapper, IMailService mailService)
         {
             _repository = repository;
             _passwordHasher = passwordHasher;
             _mapper = mapper;
+            _mailService = mailService;
         }
 
         public async Task<UserDTO> EditMyProfile(int id, EditUserDTO newUserInfos)
@@ -73,6 +76,22 @@ namespace Web_2_Online_Shop.Services
             return user.Image;
         }
 
+        public async Task<List<UserDTO>> GetUnverifiedSellers()
+        {
+            var users = await _repository._userRepository.GetAllAsync();
+            var unverifiedSellers = users.Where(u => u.Role == Enums.UserRoles.Seller && u.Verificated == Enums.VerificatedStates.Wait).ToList();
+
+            return _mapper.Map<List<User>, List<UserDTO>>(unverifiedSellers);
+        }
+
+        public async Task<List<UserDTO>> GetVerifiedSellers()
+        {
+            var users = await _repository._userRepository.GetAllAsync();
+            var unverifiedSellers = users.Where(u => u.Role == Enums.UserRoles.Seller && u.Verificated == Enums.VerificatedStates.Accepted).ToList();
+
+            return _mapper.Map<List<User>, List<UserDTO>>(unverifiedSellers);
+        }
+
         public async Task UploadMyImage(int id, IFormFile file)
         {
             var user = await _repository._userRepository.FindAsync(id) ?? throw new ExceptionHandler.Exceptions.UnauthorizedAccessException("User with this token is not authenticated");
@@ -85,6 +104,25 @@ namespace Web_2_Online_Shop.Services
                 _repository._userRepository.Update(user);
             }
 
+            await _repository.SaveChanges();
+        }
+
+        public async Task VerifySeller(UserVerifyDTO userVerify)
+        {
+            var user = await _repository._userRepository.FindAsync(userVerify.Id) ?? throw new NotFoundException(string.Format("User with id: {0} doesn't exist.", userVerify.Id));
+
+            user.Verificated = (VerificatedStates)Enum.Parse(typeof(VerificatedStates), userVerify.Verified);
+            string subject = user.Verificated == VerificatedStates.Accepted
+                ? "Verification - Account Approved"
+                : "Verification - Account Denied";
+
+            string message = user.Verificated == VerificatedStates.Accepted
+                ? "Your account is approved. You can now start selling."
+                : "Your account is denied. You cannot start selling.";
+
+            await _mailService.SendEmail(subject, message, user.Email);
+
+            _repository._userRepository.Update(user);
             await _repository.SaveChanges();
         }
     }

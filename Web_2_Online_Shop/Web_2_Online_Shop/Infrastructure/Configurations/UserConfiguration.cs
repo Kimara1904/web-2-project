@@ -28,7 +28,8 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
                 Email = "admin@admin.com",
                 Username = "Admin",
                 Password = new PasswordHasher<User>().HashPassword(null, "Adm1n!"),
-                Role = UserRoles.Admin
+                Role = UserRoles.Admin,
+                Verificated = VerificatedStates.Accepted
             });
         }
     }

@@ -18,13 +18,15 @@ namespace Web_2_Online_Shop.Services
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IMailService _mailService;
 
-        public AuthenticationService(IRepositoryWrapper repository, IConfiguration configuration, IMapper mapper, IPasswordHasher<User> passwordHasher)
+        public AuthenticationService(IRepositoryWrapper repository, IConfiguration configuration, IMapper mapper, IPasswordHasher<User> passwordHasher, IMailService mailService)
         {
             _repository = repository;
             _configuration = configuration;
             _mapper = mapper;
             _passwordHasher = passwordHasher;
+            _mailService = mailService;
         }
 
         public async Task<string> Login(string email, string password)
@@ -38,7 +40,7 @@ namespace Web_2_Online_Shop.Services
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("UserId", user.Id.ToString()),
                         new Claim("Email", user.Email),
-                        new Claim("Role", user.Role.ToString())
+                        new Claim(ClaimTypes.Role, user.Role.ToString()),
                     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "default"));
@@ -83,6 +85,7 @@ namespace Web_2_Online_Shop.Services
             else
             {
                 user.Verificated = VerificatedStates.Wait;
+                await _mailService.SendEmail("Verification", "Your account is successfully registered and is currently waiting for administrator to approve", user.Email);
             }
 
             await _repository._userRepository.Insert(user);
