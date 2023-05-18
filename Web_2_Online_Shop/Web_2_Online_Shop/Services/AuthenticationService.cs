@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Web_2_Online_Shop.DTOs;
+using Web_2_Online_Shop.Enums;
 using Web_2_Online_Shop.ExceptionHandler.Exceptions;
 using Web_2_Online_Shop.Interfaces;
 using Web_2_Online_Shop.Models;
@@ -74,6 +75,15 @@ namespace Web_2_Online_Shop.Services
             var result = _passwordHasher.HashPassword(user, userInfo.Password);
 
             user.Password = result;
+
+            if (user.Role == Enums.UserRoles.Customer)
+            {
+                user.Verificated = VerificatedStates.Accepted;
+            }
+            else
+            {
+                user.Verificated = VerificatedStates.Wait;
+            }
 
             await _repository._userRepository.Insert(user);
             await _repository.SaveChanges();

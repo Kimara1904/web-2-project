@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Web_2_Online_Shop.DTOs;
 using Web_2_Online_Shop.Interfaces;
 
 namespace Web_2_Online_Shop.Controllers
@@ -13,6 +14,16 @@ namespace Web_2_Online_Shop.Controllers
         public UsersController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [Authorize]
+        [HttpPatch]
+        public async Task<ActionResult<UserDTO>> EditMyProfile(EditUserDTO newUserInfos)
+        {
+            var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
+            var result = await _userService.EditMyProfile(id, newUserInfos);
+
+            return Ok(result);
         }
 
         [Authorize]
