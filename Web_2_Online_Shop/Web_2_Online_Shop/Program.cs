@@ -54,6 +54,7 @@ builder.Services.AddSwaggerGen(option =>
 var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new UserProfile());
+    mc.AddProfile(new ArticleProfile());
 });
 
 IMapper mapper = mapperConfig.CreateMapper();

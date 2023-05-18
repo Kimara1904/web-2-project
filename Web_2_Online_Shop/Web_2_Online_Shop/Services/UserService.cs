@@ -26,7 +26,7 @@ namespace Web_2_Online_Shop.Services
         public async Task<UserDTO> EditMyProfile(int id, EditUserDTO newUserInfos)
         {
             var users = await _repository._userRepository.GetAllAsync();
-            var user = users.Where(u => u.Id == id).FirstOrDefault() ?? throw new ExceptionHandler.Exceptions.UnauthorizedAccessException("User with this token is not authenticated");
+            var user = users.Where(u => u.Id == id).FirstOrDefault() ?? throw new NotFoundException("User with this token doesn't exist.");
 
             if (newUserInfos.Email != null)
             {
@@ -68,7 +68,7 @@ namespace Web_2_Online_Shop.Services
 
         public async Task<byte[]> GetMyImage(int id)
         {
-            var user = await _repository._userRepository.FindAsync(id) ?? throw new ExceptionHandler.Exceptions.UnauthorizedAccessException("User with this token is not authenticated");
+            var user = await _repository._userRepository.FindAsync(id) ?? throw new NotFoundException("User with this token doesn't exist.");
             if (user.Image == null)
             {
                 throw new NotFoundException("This user doesn't have image.");
@@ -94,7 +94,7 @@ namespace Web_2_Online_Shop.Services
 
         public async Task UploadMyImage(int id, IFormFile file)
         {
-            var user = await _repository._userRepository.FindAsync(id) ?? throw new ExceptionHandler.Exceptions.UnauthorizedAccessException("User with this token is not authenticated");
+            var user = await _repository._userRepository.FindAsync(id) ?? throw new NotFoundException("User with this token doesn't exist.");
             using (var ms = new MemoryStream())
             {
                 file.CopyTo(ms);
