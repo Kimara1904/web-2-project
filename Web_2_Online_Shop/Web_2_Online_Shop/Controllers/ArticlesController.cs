@@ -30,7 +30,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize]
-        [HttpGet("allMy/{id:int}")]
+        [HttpGet("allMy")]
         public async Task<ActionResult<List<ArticleDTO>>> GetAllMy()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
@@ -38,7 +38,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
 
-        [Authorize(Roles = "Seller")]
+        [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
         [HttpPost]
         public async Task<ActionResult<ArticleDTO>> Create(CreateArticleDTO newArticle)
         {
@@ -48,7 +48,7 @@ namespace Web_2_Online_Shop.Controllers
             return Ok(ret);
         }
 
-        [Authorize(Roles = "Seller")]
+        [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<string>> UploadImage(int id, IFormFile file)
         {
@@ -58,7 +58,7 @@ namespace Web_2_Online_Shop.Controllers
             return Ok(string.Format("Image successfully uploaded for article with id: {0}", id));
         }
 
-        [Authorize(Roles = "Seller")]
+        [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -68,7 +68,7 @@ namespace Web_2_Online_Shop.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "Seller")]
+        [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
         [HttpPatch]
         public async Task<ActionResult> Update(UpdateArticleDTO updateArticle)
         {

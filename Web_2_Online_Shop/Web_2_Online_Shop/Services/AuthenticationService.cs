@@ -41,6 +41,7 @@ namespace Web_2_Online_Shop.Services
                         new Claim("UserId", user.Id.ToString()),
                         new Claim("Email", user.Email),
                         new Claim(ClaimTypes.Role, user.Role.ToString()),
+                        new Claim("VerifiedUserOnly", user.Verificated.ToString())
                     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "default"));

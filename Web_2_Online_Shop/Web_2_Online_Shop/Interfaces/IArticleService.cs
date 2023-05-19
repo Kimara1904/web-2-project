@@ -7,7 +7,6 @@ namespace Web_2_Online_Shop.Interfaces
         Task<List<ArticleDTO>> GetAll();
         Task<List<ArticleDTO>> GetAllMyArticles(int id);
         Task<ArticleDTO> GetById(int id);
-        Task CheckUser(int id);
         Task<ArticleDTO> CreateArticle(int id, CreateArticleDTO newArticle);
         Task DeleteArticle(int id, int sellerId);
         Task<ArticleDTO> UpdateArticle(int idSeller, UpdateArticleDTO newArticleInfo);
