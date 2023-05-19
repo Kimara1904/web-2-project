@@ -3,7 +3,7 @@
     public class CreateOrderDTO
     {
         public List<CreateItemDTO> Items { get; set; } = null!;
-        public string DeliveryAddress { get; set; } = null!;
+        public string Address { get; set; } = null!;
         public string? Comment { get; set; }
     }
 }

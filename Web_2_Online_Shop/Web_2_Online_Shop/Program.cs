@@ -56,6 +56,8 @@ var mapperConfig = new MapperConfiguration(mc =>
 {
     mc.AddProfile(new UserProfile());
     mc.AddProfile(new ArticleProfile());
+    mc.AddProfile(new ItemProfile());
+    mc.AddProfile(new OrderProfile());
 });
 
 IMapper mapper = mapperConfig.CreateMapper();

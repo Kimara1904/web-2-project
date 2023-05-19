@@ -2,5 +2,9 @@
 {
     public class OrderDTO
     {
+        public int Id { get; set; }
+        public List<ItemDTO> Items { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public string? Comment { get; set; }
     }
 }
