@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web_2_Online_Shop.Infrastructure;
 
@@ -11,9 +12,11 @@ using Web_2_Online_Shop.Infrastructure;
 namespace Web_2_Online_Shop.Migrations
 {
     [DbContext(typeof(ShopDataBaseContext))]
-    partial class ShopDataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230520121818_ModifyVerifiedPropertyMigration")]
+    partial class ModifyVerifiedPropertyMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,7 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Articles", (string)null);
+                    b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.Order", b =>
@@ -96,7 +99,7 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.HasIndex("BuyerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.OrderItem", b =>
@@ -127,7 +130,7 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.User", b =>
@@ -191,7 +194,7 @@ namespace Web_2_Online_Shop.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
@@ -200,7 +203,7 @@ namespace Web_2_Online_Shop.Migrations
                             Birth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@admin.com",
                             IsDeleted = false,
-                            Password = "AQAAAAEAACcQAAAAEMsAW3mCvBkP4gIoBaKCV1dubOmEJRqpY4hTxRceNlwtAby2sZsPWQmGVQilK0R2Tw==",
+                            Password = "AQAAAAEAACcQAAAAEDK0YiPowoXmgEWdErMXGwHs1wLGveDtl9gPlCXFKAjUkIs6xhPQY/C4TumnIy0QAQ==",
                             Role = "Admin",
                             Username = "Admin",
                             Verified = "Accepted"
@@ -212,7 +215,7 @@ namespace Web_2_Online_Shop.Migrations
                     b.HasOne("Web_2_Online_Shop.Models.User", "Seller")
                         .WithMany("Articles")
                         .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Seller");
@@ -223,7 +226,7 @@ namespace Web_2_Online_Shop.Migrations
                     b.HasOne("Web_2_Online_Shop.Models.User", "Buyer")
                         .WithMany("Orders")
                         .HasForeignKey("BuyerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Buyer");
@@ -234,13 +237,13 @@ namespace Web_2_Online_Shop.Migrations
                     b.HasOne("Web_2_Online_Shop.Models.Article", "Article")
                         .WithMany("Items")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Web_2_Online_Shop.Models.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Article");

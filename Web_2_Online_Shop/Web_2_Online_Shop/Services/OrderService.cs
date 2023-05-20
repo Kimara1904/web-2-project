@@ -69,6 +69,8 @@ namespace Web_2_Online_Shop.Services
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
             var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).ToList();
 
+            var items = orders[0].Items;
+
             return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
         }
 
@@ -76,7 +78,8 @@ namespace Web_2_Online_Shop.Services
         {
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
             var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article)
-                .Where(o => o.Items.Any(i => i.Article.SellerId == id) && o.State == Enums.OrderState.Deliverd).ToList();
+                .Where(o => o.Items.Any(i => i.Article.SellerId == id) && o.State == Enums.OrderState.Delivered).ToList();
+
             return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
         }
 
@@ -88,10 +91,10 @@ namespace Web_2_Online_Shop.Services
             return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
         }
 
-        public async Task<List<OrderDTO>> GetAllMy(int id)
+        public async Task<List<OrderDTO>> GetAllMyDelivered(int id)
         {
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
-            var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.BuyerId == id).ToList();
+            var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.BuyerId == id && o.State == Enums.OrderState.Delivered).ToList();
 
             return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
         }

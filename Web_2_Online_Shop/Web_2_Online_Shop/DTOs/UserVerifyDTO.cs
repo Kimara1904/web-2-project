@@ -2,7 +2,7 @@
 {
     public class UserVerifyDTO
     {
-        public int Id { get; set; }
+        public string Username { get; set; } = null!;
         public string Verified { get; set; } = null!;
     }
 }

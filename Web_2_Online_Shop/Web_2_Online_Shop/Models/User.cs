@@ -13,9 +13,9 @@ namespace Web_2_Online_Shop.Models
         public string? Address { get; set; }
         public UserRoles Role { get; set; }
         public byte[]? Image { get; set; }
-        public VerificatedStates Verificated { get; set; }
-        public List<Order>? Orders { get; set; }
-        public List<Article>? Articles { get; set; }
+        public VerifiedStates Verified { get; set; }
+        public virtual List<Order>? Orders { get; set; }
+        public virtual List<Article>? Articles { get; set; }
 
     }
 }

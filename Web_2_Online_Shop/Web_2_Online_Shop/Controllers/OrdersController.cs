@@ -16,7 +16,7 @@ namespace Web_2_Online_Shop.Controllers
             _orderService = orderService;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<List<OrderDTO>>> GetAll()
         {
@@ -24,12 +24,12 @@ namespace Web_2_Online_Shop.Controllers
             return Ok(ret);
         }
 
-        [Authorize(Roles = "Buyer")]
-        [HttpGet("allmy")]
+        [Authorize(Roles = "Customer")]
+        [HttpGet("allmydelivered")]
         public async Task<ActionResult<List<OrderDTO>>> GetAllMy()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
-            var ret = await _orderService.GetAllMy(id);
+            var ret = await _orderService.GetAllMyDelivered(id);
 
             return Ok(ret);
         }
@@ -54,7 +54,7 @@ namespace Web_2_Online_Shop.Controllers
             return Ok(ret);
         }
 
-        [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         public async Task<ActionResult<OrderDTO>> Create(CreateOrderDTO orderDTO)
         {
@@ -64,7 +64,7 @@ namespace Web_2_Online_Shop.Controllers
             return Ok(ret);
         }
 
-        [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
+        [Authorize(Roles = "Customer")]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<OrderDTO>> Cancle(int id)
         {

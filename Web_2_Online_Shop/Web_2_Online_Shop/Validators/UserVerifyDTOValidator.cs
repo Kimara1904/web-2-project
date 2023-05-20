@@ -7,7 +7,7 @@ namespace Web_2_Online_Shop.Validators
     {
         public UserVerifyDTOValidator()
         {
-            RuleFor(u => u.Id).NotEmpty();
+            RuleFor(u => u.Username).NotEmpty();
             RuleFor(u => u.Verified).NotEmpty()
                 .Must(verify => verify.Equals("Accepted") || verify.Equals("Denied")).WithMessage("Verification state can be Accepted or Denied");
         }

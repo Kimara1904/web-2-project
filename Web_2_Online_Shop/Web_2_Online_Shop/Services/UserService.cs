@@ -76,10 +76,16 @@ namespace Web_2_Online_Shop.Services
             return user.Image;
         }
 
+        public async Task<UserDTO> GetMyProfile(int id)
+        {
+            var user = await _repository._userRepository.FindAsync(id) ?? throw new NotFoundException("User with this token doesn't exist.");
+            return _mapper.Map<UserDTO>(user);
+        }
+
         public async Task<List<UserDTO>> GetUnverifiedSellers()
         {
             var users = await _repository._userRepository.GetAllAsync();
-            var unverifiedSellers = users.Where(u => u.Role == Enums.UserRoles.Seller && u.Verificated == Enums.VerificatedStates.Wait).ToList();
+            var unverifiedSellers = users.Where(u => u.Role == Enums.UserRoles.Seller && u.Verified == Enums.VerifiedStates.Wait).ToList();
 
             return _mapper.Map<List<User>, List<UserDTO>>(unverifiedSellers);
         }
@@ -87,7 +93,7 @@ namespace Web_2_Online_Shop.Services
         public async Task<List<UserDTO>> GetVerifiedSellers()
         {
             var users = await _repository._userRepository.GetAllAsync();
-            var unverifiedSellers = users.Where(u => u.Role == Enums.UserRoles.Seller && u.Verificated == Enums.VerificatedStates.Accepted).ToList();
+            var unverifiedSellers = users.Where(u => u.Role == Enums.UserRoles.Seller && u.Verified == Enums.VerifiedStates.Accepted).ToList();
 
             return _mapper.Map<List<User>, List<UserDTO>>(unverifiedSellers);
         }
@@ -109,14 +115,16 @@ namespace Web_2_Online_Shop.Services
 
         public async Task VerifySeller(UserVerifyDTO userVerify)
         {
-            var user = await _repository._userRepository.FindAsync(userVerify.Id) ?? throw new NotFoundException(string.Format("User with id: {0} doesn't exist.", userVerify.Id));
+            var userQuery = await _repository._userRepository.GetAllAsync();
+            var user = userQuery.Where(u => u.Username == userVerify.Username).FirstOrDefault()
+                ?? throw new NotFoundException(string.Format("User with username: {0} doesn't exist.", userVerify.Username));
 
-            user.Verificated = (VerificatedStates)Enum.Parse(typeof(VerificatedStates), userVerify.Verified);
-            string subject = user.Verificated == VerificatedStates.Accepted
+            user.Verified = (VerifiedStates)Enum.Parse(typeof(VerifiedStates), userVerify.Verified);
+            string subject = user.Verified == VerifiedStates.Accepted
                 ? "Verification - Account Approved"
                 : "Verification - Account Denied";
 
-            string message = user.Verificated == VerificatedStates.Accepted
+            string message = user.Verified == VerifiedStates.Accepted
                 ? "Your account is approved. You can now start selling."
                 : "Your account is denied. You cannot start selling.";
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web_2_Online_Shop.Infrastructure;
 
@@ -11,9 +12,11 @@ using Web_2_Online_Shop.Infrastructure;
 namespace Web_2_Online_Shop.Migrations
 {
     [DbContext(typeof(ShopDataBaseContext))]
-    partial class ShopDataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230520191352_ModifyDeleteBehaviorMigration")]
+    partial class ModifyDeleteBehaviorMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +62,7 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Articles", (string)null);
+                    b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.Order", b =>
@@ -96,7 +99,7 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.HasIndex("BuyerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.OrderItem", b =>
@@ -127,7 +130,7 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.User", b =>
@@ -191,7 +194,7 @@ namespace Web_2_Online_Shop.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new

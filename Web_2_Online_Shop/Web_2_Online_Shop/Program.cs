@@ -70,6 +70,8 @@ builder.Services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMailService, MailService>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ExceptionHandler>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddFluentValidationAutoValidation();
@@ -116,7 +118,7 @@ builder.Services.AddAuthorization(options =>
       .Build();
 
     options.AddPolicy("VerifiedUserOnly", policy =>
-              policy.RequireClaim("IsVerified", "Accepted"));
+              policy.RequireClaim("Verified", "Accepted"));
 });
 
 var app = builder.Build();

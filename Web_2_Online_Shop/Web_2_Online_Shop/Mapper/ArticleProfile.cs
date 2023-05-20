@@ -11,7 +11,19 @@ namespace Web_2_Online_Shop.Mapper
             CreateMap<Article, ArticleDTO>();
             CreateMap<CreateArticleDTO, Article>();
             CreateMap<UpdateArticleDTO, Article>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) =>
+                {
+                    if (srcMember == null)
+                        return false;
+
+                    if (srcMember is string)
+                        return !string.IsNullOrEmpty((string)srcMember);
+
+                    if (srcMember is int)
+                        return (int)srcMember > 0;
+
+                    return true;
+                }));
         }
     }
 }

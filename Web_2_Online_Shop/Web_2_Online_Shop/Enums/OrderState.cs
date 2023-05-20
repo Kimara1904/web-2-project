@@ -3,7 +3,7 @@
     public enum OrderState
     {
         InDelivery,
-        Deliverd,
+        Delivered,
         Cancled
     }
 }

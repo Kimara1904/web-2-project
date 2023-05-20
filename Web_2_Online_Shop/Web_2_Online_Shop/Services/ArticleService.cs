@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Web_2_Online_Shop.DTOs;
 using Web_2_Online_Shop.ExceptionHandler.Exceptions;
 using Web_2_Online_Shop.Interfaces;
@@ -45,7 +46,9 @@ namespace Web_2_Online_Shop.Services
         public async Task<List<ArticleDTO>> GetAll()
         {
             var articlesQuery = await _repository._articleRepository.GetAllAsync();
-            var articles = articlesQuery.ToList();
+            var articles = articlesQuery.Include(a => a.Seller).ToList();
+
+            var seller = articles[0].Seller;
 
             var ret = _mapper.Map<List<Article>, List<ArticleDTO>>(articles);
             return ret;
@@ -66,11 +69,11 @@ namespace Web_2_Online_Shop.Services
             return _mapper.Map<ArticleDTO>(article);
         }
 
-        public async Task<ArticleDTO> UpdateArticle(int idSeller, UpdateArticleDTO newArticleInfo)
+        public async Task<ArticleDTO> UpdateArticle(int idProduct, int idSeller, UpdateArticleDTO newArticleInfo)
         {
             var articles = await _repository._articleRepository.GetAllAsync();
-            var article = articles.Where(a => a.Id == newArticleInfo.Id && a.SellerId == idSeller).FirstOrDefault() ??
-                throw new NotFoundException(string.Format("Article with id: {0} doesn't exist", newArticleInfo.Id));
+            var article = articles.Where(a => a.Id == idProduct && a.SellerId == idSeller).FirstOrDefault() ??
+                throw new NotFoundException(string.Format("Article with id: {0} doesn't exist", idProduct));
 
             _mapper.Map<UpdateArticleDTO, Article>(newArticleInfo, article);
             _repository._articleRepository.Update(article);
@@ -81,7 +84,9 @@ namespace Web_2_Online_Shop.Services
 
         public async Task UploadImage(int id, IFormFile file, int sellerId)
         {
-            var article = await _repository._articleRepository.FindAsync(id) ?? throw new NotFoundException(string.Format("Article with id: {0} doesn't exist."));
+            var articleQuery = await _repository._articleRepository.GetAllAsync();
+            var article = articleQuery.Where(a => a.Id == id && a.SellerId == sellerId).FirstOrDefault() ?? throw new NotFoundException(string.Format("Article with id: {0} doesn't exist.", id));
+
             using (var ms = new MemoryStream())
             {
                 file.CopyTo(ms);

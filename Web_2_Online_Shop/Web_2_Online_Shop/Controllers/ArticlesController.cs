@@ -29,7 +29,7 @@ namespace Web_2_Online_Shop.Controllers
             return await _articleService.GetById(id);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
         [HttpGet("allMy")]
         public async Task<ActionResult<List<ArticleDTO>>> GetAllMy()
         {
@@ -69,11 +69,11 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
-        [HttpPatch]
-        public async Task<ActionResult> Update(UpdateArticleDTO updateArticle)
+        [HttpPatch("{id:int}")]
+        public async Task<ActionResult> Update(int id, UpdateArticleDTO updateArticle)
         {
             var sellerId = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
-            var result = await _articleService.UpdateArticle(sellerId, updateArticle);
+            var result = await _articleService.UpdateArticle(id, sellerId, updateArticle);
 
             return Ok(result);
         }

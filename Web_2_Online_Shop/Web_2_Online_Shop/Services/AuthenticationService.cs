@@ -41,7 +41,7 @@ namespace Web_2_Online_Shop.Services
                         new Claim("UserId", user.Id.ToString()),
                         new Claim("Email", user.Email),
                         new Claim(ClaimTypes.Role, user.Role.ToString()),
-                        new Claim("VerifiedUserOnly", user.Verificated.ToString())
+                        new Claim("Verified", user.Verified.ToString())
                     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "default"));
@@ -81,12 +81,12 @@ namespace Web_2_Online_Shop.Services
 
             if (user.Role == Enums.UserRoles.Customer)
             {
-                user.Verificated = VerificatedStates.Accepted;
+                user.Verified = VerifiedStates.Accepted;
             }
             else
             {
-                user.Verificated = VerificatedStates.Wait;
-                await _mailService.SendEmail("Verification", "Your account is successfully registered and is currently waiting for administrator to approve", user.Email);
+                user.Verified = VerifiedStates.Wait;
+                await _mailService.SendEmail("Verify", "Your account is successfully registered and is currently waiting for administrator to approve", user.Email);
             }
 
             await _repository._userRepository.Insert(user);

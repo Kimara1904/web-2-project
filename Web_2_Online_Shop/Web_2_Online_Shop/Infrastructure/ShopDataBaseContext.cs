@@ -17,6 +17,11 @@ namespace Web_2_Online_Shop.Infrastructure
             _passwordHasher = passwordHasher;
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

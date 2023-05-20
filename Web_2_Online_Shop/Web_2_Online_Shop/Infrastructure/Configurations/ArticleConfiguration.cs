@@ -13,7 +13,8 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
             builder.Property(a => a.Price).IsRequired();
             builder.Property(a => a.Amount).IsRequired();
             builder.Property(a => a.IsDeleted).HasDefaultValue(false);
-            builder.HasOne(a => a.Seller).WithMany(s => s.Articles).HasForeignKey(a => a.SellerId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(a => a.Seller).WithMany(s => s.Articles).HasForeignKey(a => a.SellerId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(a => a.IsDeleted != true);
         }
     }
 }

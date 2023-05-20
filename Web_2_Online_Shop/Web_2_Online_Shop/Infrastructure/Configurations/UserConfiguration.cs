@@ -21,6 +21,7 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
             builder.Property(u => u.LastName).HasMaxLength(30);
             builder.Property(u => u.Address).HasMaxLength(40);
             builder.Property(u => u.Role).HasConversion(new EnumToStringConverter<UserRoles>());
+            builder.Property(u => u.Verified).HasConversion(new EnumToStringConverter<VerifiedStates>());
             builder.Property(a => a.IsDeleted).HasDefaultValue(false);
             builder.HasData(new User
             {
@@ -29,8 +30,9 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
                 Username = "Admin",
                 Password = new PasswordHasher<User>().HashPassword(null, "Adm1n!"),
                 Role = UserRoles.Admin,
-                Verificated = VerificatedStates.Accepted
+                Verified = VerifiedStates.Accepted
             });
+            builder.HasQueryFilter(u => !u.IsDeleted);
         }
     }
 }

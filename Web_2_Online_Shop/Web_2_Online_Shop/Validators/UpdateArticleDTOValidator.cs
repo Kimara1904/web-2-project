@@ -8,8 +8,8 @@ namespace Web_2_Online_Shop.Validators
         public UpdateArticleDTOValidator()
         {
             RuleFor(a => a.Name).MaximumLength(20);
-            RuleFor(a => a.Price).GreaterThan(0);
-            RuleFor(a => a.Amount).GreaterThan(0);
+            RuleFor(a => a.Price).GreaterThanOrEqualTo(0);
+            RuleFor(a => a.Amount).GreaterThanOrEqualTo(0);
         }
     }
 }

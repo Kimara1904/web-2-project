@@ -17,6 +17,16 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize]
+        [HttpGet("myprofile")]
+        public async Task<ActionResult<UserDTO>> GetMyProfile()
+        {
+            var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
+            var ret = await _userService.GetMyProfile(id);
+
+            return Ok(ret);
+        }
+
+        [Authorize]
         [HttpGet("image")]
         public async Task<ActionResult> GetMyImage()
         {
@@ -57,7 +67,7 @@ namespace Web_2_Online_Shop.Controllers
         public async Task<ActionResult> VerifyUser(UserVerifyDTO userVerify)
         {
             await _userService.VerifySeller(userVerify);
-            return Ok(string.Format("Successfully verified seller with id: {0}", userVerify.Id));
+            return Ok(string.Format("Successfully verified seller with id: {0}", userVerify.Username));
         }
 
         [Authorize]
