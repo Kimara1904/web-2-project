@@ -1,6 +1,4 @@
-﻿using Web_2_Online_Shop.Enums;
-
-namespace Web_2_Online_Shop.Models
+﻿namespace Web_2_Online_Shop.Models
 {
     public class Order : EntityBase
     {
@@ -8,7 +6,7 @@ namespace Web_2_Online_Shop.Models
         public string Address { get; set; } = null!;
         public DateTime DeliveryTime { get; set; }
         public string? Comment { get; set; }
-        public OrderState State { get; set; }
+        public bool IsCanceled { get; set; }
         public virtual User? Buyer { get; set; }
         public int BuyerId { get; set; }
     }

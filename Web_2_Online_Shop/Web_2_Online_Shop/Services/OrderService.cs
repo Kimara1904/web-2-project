@@ -20,10 +20,10 @@ namespace Web_2_Online_Shop.Services
         public async Task Cancle(int id, int buyerId)
         {
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
-            var order = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.Id == id && o.State == Enums.OrderState.InDelivery).FirstOrDefault() ??
+            var order = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.Id == id && !o.IsCanceled && o.DeliveryTime < DateTime.UtcNow).FirstOrDefault() ??
                 throw new NotFoundException(string.Format("Order with id: {0} in delivery process doesn't exit.", id));
 
-            order.State = Enums.OrderState.Cancled;
+            order.IsCanceled = true;
 
             foreach (var item in order.Items)
             {
@@ -39,8 +39,7 @@ namespace Web_2_Online_Shop.Services
         {
             var order = _mapper.Map<Order>(orderDTO);
             order.BuyerId = id;
-            order.State = Enums.OrderState.InDelivery;
-            order.DeliveryTime = DateTime.Now.AddHours(1).AddMinutes(new Random().Next(60));
+            order.DeliveryTime = DateTime.UtcNow.AddHours(1).AddMinutes(new Random().Next(60));
 
             foreach (var item in order.Items)
             {
@@ -78,7 +77,7 @@ namespace Web_2_Online_Shop.Services
         {
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
             var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article)
-                .Where(o => o.Items.Any(i => i.Article.SellerId == id) && o.State == Enums.OrderState.Delivered).ToList();
+                .Where(o => o.Items.Any(i => i.Article.SellerId == id) && o.DeliveryTime >= DateTime.UtcNow && !o.IsCanceled).ToList();
 
             return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
         }
@@ -87,14 +86,14 @@ namespace Web_2_Online_Shop.Services
         {
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
             var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article)
-                .Where(o => o.Items.Any(i => i.Article.SellerId == id) && o.State == Enums.OrderState.InDelivery).ToList();
+                .Where(o => o.Items.Any(i => i.Article.SellerId == id) && o.DeliveryTime < DateTime.UtcNow && !o.IsCanceled).ToList();
             return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
         }
 
         public async Task<List<OrderDTO>> GetAllMyDelivered(int id)
         {
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
-            var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.BuyerId == id && o.State == Enums.OrderState.Delivered).ToList();
+            var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.BuyerId == id && o.DeliveryTime >= DateTime.UtcNow && !o.IsCanceled).ToList();
 
             return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
         }

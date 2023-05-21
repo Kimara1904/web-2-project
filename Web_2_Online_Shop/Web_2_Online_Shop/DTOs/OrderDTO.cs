@@ -7,6 +7,6 @@
         public string Address { get; set; } = null!;
         public string? Comment { get; set; }
         public DateTime DeliveryTime { get; set; }
-        public string State { get; set; } = null!;
+        public bool IsCancled { get; set; }
     }
 }
