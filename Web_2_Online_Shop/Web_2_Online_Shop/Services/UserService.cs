@@ -60,6 +60,17 @@ namespace Web_2_Online_Shop.Services
                 user.Password = result;
             }
 
+            if (newUserInfos.FileImage != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    newUserInfos.FileImage.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+
+                    user.Image = fileBytes;
+                }
+            }
+
             _repository._userRepository.Update(user);
             await _repository.SaveChanges();
 

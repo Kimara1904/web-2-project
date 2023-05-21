@@ -10,5 +10,6 @@
         public string? LastName { get; set; }
         public DateTime Birth { get; set; }
         public string? Address { get; set; }
+        public IFormFile? FileImage { get; set; }
     }
 }

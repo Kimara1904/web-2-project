@@ -70,7 +70,7 @@ namespace Web_2_Online_Shop.Controllers
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
         [HttpPatch("{id:int}")]
-        public async Task<ActionResult> Update(int id, UpdateArticleDTO updateArticle)
+        public async Task<ActionResult> Update(int id, [FromForm] UpdateArticleDTO updateArticle)
         {
             var sellerId = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
             var result = await _articleService.UpdateArticle(id, sellerId, updateArticle);

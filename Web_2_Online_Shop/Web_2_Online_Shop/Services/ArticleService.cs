@@ -76,6 +76,18 @@ namespace Web_2_Online_Shop.Services
                 throw new NotFoundException(string.Format("Article with id: {0} doesn't exist", idProduct));
 
             _mapper.Map<UpdateArticleDTO, Article>(newArticleInfo, article);
+
+            if (newArticleInfo.ImageFile != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    newArticleInfo.ImageFile.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+
+                    article.Image = fileBytes;
+                }
+            }
+
             _repository._articleRepository.Update(article);
             await _repository.SaveChanges();
 

@@ -72,7 +72,7 @@ namespace Web_2_Online_Shop.Controllers
 
         [Authorize]
         [HttpPatch]
-        public async Task<ActionResult<UserDTO>> EditMyProfile(EditUserDTO newUserInfos)
+        public async Task<ActionResult<UserDTO>> EditMyProfile([FromForm] EditUserDTO newUserInfos)
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
             var result = await _userService.EditMyProfile(id, newUserInfos);
