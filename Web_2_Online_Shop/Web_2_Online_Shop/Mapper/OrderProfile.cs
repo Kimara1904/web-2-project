@@ -9,7 +9,8 @@ namespace Web_2_Online_Shop.Mapper
         public OrderProfile()
         {
             CreateMap<CreateOrderDTO, Order>();
-            CreateMap<Order, OrderDTO>();
+            CreateMap<Order, OrderDTO>().ForMember(dest => dest.BuyerUsername, opt => opt.MapFrom(src => src.Buyer.Username));
+            CreateMap<Order, MyOrderDTO>();
         }
     }
 }

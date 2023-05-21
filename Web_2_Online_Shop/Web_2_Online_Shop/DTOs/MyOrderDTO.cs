@@ -1,9 +1,8 @@
 ﻿namespace Web_2_Online_Shop.DTOs
 {
-    public class OrderDTO
+    public class MyOrderDTO
     {
         public int Id { get; set; }
-        public string BuyerUsername { get; set; } = null!;
         public List<ItemDTO> Items { get; set; } = null!;
         public string Address { get; set; } = null!;
         public string? Comment { get; set; }

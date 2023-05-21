@@ -26,7 +26,7 @@ namespace Web_2_Online_Shop.Controllers
 
         [Authorize(Roles = "Customer")]
         [HttpGet("allmydelivered")]
-        public async Task<ActionResult<List<OrderDTO>>> GetAllMy()
+        public async Task<ActionResult<List<MyOrderDTO>>> GetAllMy()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
             var ret = await _orderService.GetAllMyDelivered(id);
@@ -56,7 +56,7 @@ namespace Web_2_Online_Shop.Controllers
 
         [Authorize(Roles = "Customer")]
         [HttpPost]
-        public async Task<ActionResult<OrderDTO>> Create(CreateOrderDTO orderDTO)
+        public async Task<ActionResult<MyOrderDTO>> Create(CreateOrderDTO orderDTO)
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
             var ret = await _orderService.Create(orderDTO, id);
