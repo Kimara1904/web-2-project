@@ -50,10 +50,10 @@ namespace Web_2_Online_Shop.Services
 
             if (newUserInfos.NewPassword != null)
             {
-                if (newUserInfos.Password == null)
+                if (newUserInfos.OldPassword == null)
                     throw new BadRequestException("If you want to change password old password is required.");
 
-                if (_passwordHasher.VerifyHashedPassword(user, user.Password, newUserInfos.Password) != PasswordVerificationResult.Success)
+                if (_passwordHasher.VerifyHashedPassword(user, user.Password, newUserInfos.OldPassword) != PasswordVerificationResult.Success)
                     throw new ConflictException("Wrong old password.");
 
                 var result = _passwordHasher.HashPassword(user, newUserInfos.NewPassword);

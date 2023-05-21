@@ -9,8 +9,6 @@ namespace Web_2_Online_Shop.Validators
         {
             RuleFor(user => user.Username).Length(6, 15);
             RuleFor(user => user.Email).EmailAddress();
-            RuleFor(user => user.Password).MinimumLength(8)
-                      .MaximumLength(30);
             RuleFor(user => user.NewPassword).MinimumLength(8)
                       .MaximumLength(30)
                       .Matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])")
