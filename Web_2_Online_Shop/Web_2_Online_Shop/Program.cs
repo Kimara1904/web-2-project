@@ -17,12 +17,23 @@ using Web_2_Online_Shop.Repositories;
 using Web_2_Online_Shop.Services;
 using Web_2_Online_Shop.Validators;
 
+var MyAllowOrigins = "myAllowOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ConfigureLogging(logging =>
 {
     logging.ClearProviders();
     logging.AddConsole();
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:5173/");
+                      });
 });
 
 // Add services to the container.
@@ -138,6 +149,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(MyAllowOrigins);
 
 app.UseAuthentication();
 app.UseAuthorization();

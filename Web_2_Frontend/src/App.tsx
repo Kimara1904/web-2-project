@@ -1,8 +1,15 @@
+import { BrowserRouter } from 'react-router-dom'
+
+import { configureAxiosRequestInterceptors } from './services/ServiceConfig'
+import AppContent from './AppContent'
+
 function App() {
+  configureAxiosRequestInterceptors()
+
   return (
-    <>
-      <h1>Hello world</h1>
-    </>
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
   )
 }
 
