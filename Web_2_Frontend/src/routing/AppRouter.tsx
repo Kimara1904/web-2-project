@@ -7,12 +7,14 @@ import ArticlePage from '../pages/ArticlePage'
 import { isUserLoggedIn } from '../helpers/TokenHelpers'
 import LoginPage from '../pages/LoginPage'
 import RegisterPage from '../pages/RegisterPage'
+import DashboardPage from '../pages/DashboardPage'
 
 const AppRouter = () => {
   return (
     <Routes>
       <Route element={<PrivateRouter />}>
         <Route path='/' element={<Navigate to='/dashboard' />} />
+        <Route path='/dashboard' element={<DashboardPage />} />
         <Route path='/user_info' element={<ProfilePage />} />
         <Route path='/order_detail' element={<OrderDetailPage />} />
         <Route path='/article' element={<ArticlePage />} />

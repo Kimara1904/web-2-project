@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-export const baseUrl = import.meta.env.BASE_URL
+export const baseUrl: string = process.env.REACT_APP_API_ENDPOINT
+  ? process.env.REACT_APP_API_ENDPOINT
+  : ''
 
 export const configureAxiosRequestInterceptors = () => {
   axios.interceptors.request.use(
