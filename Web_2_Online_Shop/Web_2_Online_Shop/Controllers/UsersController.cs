@@ -5,7 +5,7 @@ using Web_2_Online_Shop.Interfaces;
 
 namespace Web_2_Online_Shop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize]
-        [HttpGet("myprofile")]
+        [HttpGet("my-profile")]
         public async Task<ActionResult<UserDTO>> GetMyProfile()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);

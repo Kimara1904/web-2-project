@@ -5,7 +5,7 @@ using Web_2_Online_Shop.Interfaces;
 
 namespace Web_2_Online_Shop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/articles")]
     [ApiController]
     public class ArticlesController : ControllerBase
     {
@@ -30,7 +30,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
-        [HttpGet("allMy")]
+        [HttpGet("all-my")]
         public async Task<ActionResult<List<ArticleDTO>>> GetAllMy()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
@@ -49,7 +49,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}/image")]
         public async Task<ActionResult<string>> UploadImage(int id, IFormFile file)
         {
             var sellerId = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);

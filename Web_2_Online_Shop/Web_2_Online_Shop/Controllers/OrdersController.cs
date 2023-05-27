@@ -5,7 +5,7 @@ using Web_2_Online_Shop.Interfaces;
 
 namespace Web_2_Online_Shop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -25,7 +25,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Customer")]
-        [HttpGet("allmydelivered")]
+        [HttpGet("customer/delivered")]
         public async Task<ActionResult<List<MyOrderDTO>>> GetAllMy()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
@@ -35,7 +35,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
-        [HttpGet("delivered")]
+        [HttpGet("seller/delivered")]
         public async Task<ActionResult<List<OrderDTO>>> GetAllDelivered()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
@@ -45,7 +45,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
-        [HttpGet("indelivery")]
+        [HttpGet("seller/in-delivery")]
         public async Task<ActionResult<List<OrderDTO>>> GetAllInDelivery()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);

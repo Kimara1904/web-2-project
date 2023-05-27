@@ -5,7 +5,7 @@ using Web_2_Online_Shop.Interfaces;
 
 namespace Web_2_Online_Shop.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/authentication")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
