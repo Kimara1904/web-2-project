@@ -22,7 +22,6 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
             builder.Property(u => u.Address).HasMaxLength(40);
             builder.Property(u => u.Role).HasConversion(new EnumToStringConverter<UserRoles>());
             builder.Property(u => u.Verified).HasConversion(new EnumToStringConverter<VerifiedStates>());
-            builder.Property(a => a.IsDeleted).HasDefaultValue(false);
             builder.HasData(new User
             {
                 Id = 1,
@@ -32,7 +31,6 @@ namespace Web_2_Online_Shop.Infrastructure.Configurations
                 Role = UserRoles.Admin,
                 Verified = VerifiedStates.Accepted
             });
-            builder.HasQueryFilter(u => !u.IsDeleted);
         }
     }
 }

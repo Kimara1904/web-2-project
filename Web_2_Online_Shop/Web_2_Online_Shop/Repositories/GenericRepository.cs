@@ -15,8 +15,7 @@ namespace Web_2_Online_Shop.Repositories
 
         public void Delete(T entity)
         {
-            entity.IsDeleted = true;
-            _context.Set<T>().Update(entity);
+            _context.Set<T>().Remove(entity);
         }
 
         public async Task<T?> FindAsync(int id)
