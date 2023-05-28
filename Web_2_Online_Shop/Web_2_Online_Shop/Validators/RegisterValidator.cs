@@ -18,6 +18,7 @@ namespace Web_2_Online_Shop.Validators
             RuleFor(user => user.BirthDate).NotEmpty().LessThan(DateTime.Now.AddYears(-18)).WithMessage("User must have 18 years and above");
             RuleFor(user => user.Role).NotEmpty().NotEqual("Admin").WithMessage("Admin can't be registered")
                 .Must(role => role.Equals("Seller") || role.Equals("Customer")).WithMessage("Role must be Seller or Customer.");
+            RuleFor(user => user.Address).NotEmpty().MaximumLength(40);
         }
     }
 }
