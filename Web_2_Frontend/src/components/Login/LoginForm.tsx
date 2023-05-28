@@ -82,7 +82,7 @@ const LoginForm = () => {
           label='Password'
           variant='outlined'
           error={isPasswordError}
-          helperText={isPasswordError && 'Email is required'}
+          helperText={isPasswordError && 'Password is required'}
           inputRef={passwordRef}
           onBlur={handleBlurPassword}
           onFocus={() => setIsPasswordError(false)}
