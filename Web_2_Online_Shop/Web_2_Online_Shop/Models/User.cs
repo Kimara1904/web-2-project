@@ -9,7 +9,7 @@ namespace Web_2_Online_Shop.Models
         public string Password { get; set; } = null!;
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public DateTime Birth { get; set; }
+        public DateTime BirthDate { get; set; }
         public string? Address { get; set; }
         public UserRoles Role { get; set; }
         public byte[]? Image { get; set; }

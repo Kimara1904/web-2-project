@@ -7,7 +7,7 @@
         public string Password { get; set; } = null!;
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
-        public DateTime Birth { get; set; }
+        public DateTime BirthDate { get; set; }
         public string Address { get; set; } = null!;
         public string Role { get; set; } = null!;
     }
