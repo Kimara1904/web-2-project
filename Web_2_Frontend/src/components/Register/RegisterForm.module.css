@@ -22,3 +22,12 @@
     white-space: pre-wrap;
     text-align: justify;
 }
+
+.alert_register {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    width: auto;
+}

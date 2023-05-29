@@ -16,6 +16,7 @@ import { AxiosError, isAxiosError } from 'axios'
 import styles from './RegisterForm.module.css'
 import { RegisterRequest } from '../../models/AuthenticationModels'
 import { register } from '../../services/AuthenticationService'
+import { ErrorData } from '../../models/ErrorModels'
 
 const RegisterForm = () => {
   const [errors, setErrors] = useState({
@@ -305,10 +306,10 @@ const RegisterForm = () => {
           severity: 'success'
         })
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
           setAlert({
-            message: error.message,
+            message: error.response?.data.Exception as string,
             severity: 'error'
           })
         }
@@ -319,6 +320,7 @@ const RegisterForm = () => {
     <div className={styles.div_register_form}>
       {alert.message !== '' && (
         <Alert
+          className={styles.alert_register}
           severity={alert.severity as AlertColor}
           onClose={() => setAlert({ message: '', severity: 'success' })}
         >
