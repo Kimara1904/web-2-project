@@ -1,0 +1,15 @@
+.dashboard_div {
+    margin-top: 70px;
+    margin-left: 110px;
+}
+
+.sidebar {
+    position: fixed;
+    z-index: -1;
+}
+
+.options {
+    margin-top: 200px;
+    display: flex;
+    flex-direction: column;
+}
