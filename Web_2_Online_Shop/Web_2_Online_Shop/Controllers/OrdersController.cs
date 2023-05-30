@@ -25,17 +25,17 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Customer")]
-        [HttpGet("customer/delivered")]
+        [HttpGet("customers-orders")]
         public async Task<ActionResult<List<MyOrderDTO>>> GetAllMy()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
-            var ret = await _orderService.GetAllMyDelivered(id);
+            var ret = await _orderService.GetAllMy(id);
 
             return Ok(ret);
         }
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
-        [HttpGet("seller/delivered")]
+        [HttpGet("sellers-delivered")]
         public async Task<ActionResult<List<OrderDTO>>> GetAllDelivered()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
@@ -45,7 +45,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
-        [HttpGet("seller/in-delivery")]
+        [HttpGet("sellers-in-delivery")]
         public async Task<ActionResult<List<OrderDTO>>> GetAllInDelivery()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);

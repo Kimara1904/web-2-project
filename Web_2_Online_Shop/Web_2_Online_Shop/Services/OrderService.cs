@@ -88,10 +88,10 @@ namespace Web_2_Online_Shop.Services
             return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
         }
 
-        public async Task<List<MyOrderDTO>> GetAllMyDelivered(int id)
+        public async Task<List<MyOrderDTO>> GetAllMy(int id)
         {
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
-            var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.BuyerId == id && o.DeliveryTime <= DateTime.Now && !o.IsCancled).ToList();
+            var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.BuyerId == id && !o.IsCancled).ToList();
 
             return _mapper.Map<List<Order>, List<MyOrderDTO>>(orders);
         }
