@@ -24,6 +24,7 @@ const SellerVerifyList = (props: SellerVerifyListProperties) => {
               <TableCell>Email</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Birth Date</TableCell>
+              <TableCell align='right'>Address</TableCell>
               <TableCell align='right' />
             </TableRow>
           </TableHead>
@@ -34,14 +35,16 @@ const SellerVerifyList = (props: SellerVerifyListProperties) => {
                   <SellerVerifyItem
                     key={seller.username}
                     seller={seller}
-                    verified={false}
+                    verified={props.verified}
                     onVerify={props.onVerify}
                   />
                 )
               })
             ) : (
               <TableRow>
-                <Typography variant='body2'>There is no users</Typography>
+                <TableCell align='center' colSpan={6}>
+                  <Typography variant='body2'>There is no users</Typography>
+                </TableCell>
               </TableRow>
             )}
           </TableBody>

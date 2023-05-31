@@ -4,6 +4,7 @@ import { AxiosError, isAxiosError } from 'axios'
 import { SellerVerifyItemProperties } from '../models/Properties'
 import DefaultUserImage from '../images/default_user_picture.jpg'
 import { verifySeller } from '../services/UserService'
+import styles from './SellerVerifyItem.module.css'
 
 const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
   const handleVerify = (verified: string) => {
@@ -18,6 +19,14 @@ const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
           //izbaciti alert
         }
       })
+  }
+
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString)
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
+    const year = date.getFullYear().toString()
+    return `${day}/${month}/${year}`
   }
 
   const handleAcceptClick = () => {
@@ -35,6 +44,7 @@ const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
     >
       <TableCell>
         <img
+          className={styles.user_verify_image}
           src={
             props.seller.image !== ''
               ? 'data:image/png;base64,' + props.seller.image
@@ -48,7 +58,8 @@ const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
       </TableCell>
       <TableCell>{props.seller.email}</TableCell>
       <TableCell>{props.seller.firstName + ' ' + props.seller.lastName}</TableCell>
-      <TableCell>{props.seller.address}</TableCell>
+      <TableCell>{formatDate(props.seller.birthDate)}</TableCell>
+      <TableCell align='right'>{props.seller.address}</TableCell>
       <TableCell align='right'>
         {!props.verified && (
           <>

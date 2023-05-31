@@ -45,9 +45,11 @@ const OrderList = (prop: OrderListProperties) => {
     content = (
       <TableBody>
         <TableRow>
-          <Typography variant='h2' align='center' style={{ marginBottom: '16px' }}>
-            There is no orders
-          </Typography>
+          <TableCell align='center' colSpan={6}>
+            <Typography variant='h2' align='center' style={{ marginBottom: '16px' }}>
+              There is no orders
+            </Typography>
+          </TableCell>
         </TableRow>
       </TableBody>
     )
@@ -63,7 +65,7 @@ const OrderList = (prop: OrderListProperties) => {
             <TableCell align='center'>
               {order.items.map((item) => (
                 <span key={item.id}>
-                  {item.article.name + ' x ' + item.amount.toString() + ';'}
+                  {item.article.name + ' x ' + item.amount.toString() + '; '}
                 </span>
               ))}
             </TableCell>

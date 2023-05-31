@@ -1,82 +1,89 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useContext } from 'react'
 
 import { Button, Drawer } from '@mui/material'
 
 import { isAdmin, isSellerVerified } from '../../helpers/TokenHelpers'
 import styles from './DashboardContent.module.css'
 import AllOrderContent from './Contents/AllOrderContent'
+import VerifiedSellerContent from './Contents/VerifiedSellerContent'
+import UnverifiedSellerContent from './Contents/UnverifiedSellerContent'
+import DashContext from '../../store/dashboard-context'
 
 const DashboardContent = () => {
-  const [contentMark, setContentMark] = useState('')
+  const contentContext = useContext(DashContext)
 
-  const handleAllOrdersClick = () => {
-    setContentMark('all_orders')
-  }
-
-  const handleVerifyClick = () => {
-    setContentMark('verify')
-  }
-
-  const handleArticlesClick = () => {
-    setContentMark('articles')
-  }
-
-  const handleOrdersInDeliveryClick = () => {
-    setContentMark('in_delivery')
-  }
-
-  const handleDeliveredOrdersClick = () => {
-    setContentMark('delivered')
+  const handleOptionsClick = (mark: string) => {
+    contentContext.setContent(mark)
   }
 
   let content: ReactNode = null
-  if (contentMark === 'all_orders' || (isAdmin() && contentMark === '')) {
+  if (contentContext.content === 'all_orders' || (isAdmin() && contentContext.content === '')) {
     content = <AllOrderContent />
-  } else if (contentMark === 'verify') {
-    // verify component
-  } else if (contentMark === 'articles' || (isSellerVerified() && contentMark === '')) {
+  } else if (contentContext.content === 'verified') {
+    content = <VerifiedSellerContent />
+  } else if (contentContext.content === 'unverified') {
+    content = <UnverifiedSellerContent />
+  } else if (
+    contentContext.content === 'articles' ||
+    (isSellerVerified() && contentContext.content === '')
+  ) {
     // articles
-  } else if (contentMark === 'in_delivery') {
+  } else if (contentContext.content === 'in_delivery') {
     // in delivery orders
-  } else if (contentMark === 'delivered') {
+  } else if (contentContext.content === 'delivered') {
     // delivered orders
   } else {
     //customers dashboard
   }
 
   return (
-    <div>
-      <Drawer variant='permanent' className={styles.sidebar}>
+    <div className={styles.dashboard_div}>
+      <Drawer
+        variant='permanent'
+        className={styles.sidebar}
+        sx={{
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 110 }
+        }}
+      >
         <div className={styles.options}>
           {isAdmin() && (
-            <Button variant='text' onClick={handleAllOrdersClick}>
+            <Button variant='text' onClick={() => handleOptionsClick('all_orders')}>
               All Orders
             </Button>
           )}
           {isAdmin() && (
-            <Button variant='text' onClick={handleVerifyClick}>
-              Verify
+            <Button variant='text' onClick={() => handleOptionsClick('verified')}>
+              Verified sellers
+            </Button>
+          )}
+          {isAdmin() && (
+            <Button
+              variant='text'
+              className={styles.dashboard_button}
+              onClick={() => handleOptionsClick('unverified')}
+            >
+              Unverified sellers
             </Button>
           )}
           {isSellerVerified() && (
-            <Button variant='text' onClick={handleArticlesClick}>
+            <Button variant='text' onClick={() => handleOptionsClick('articles')}>
               Articles
             </Button>
           )}
           {isSellerVerified() && (
-            <Button variant='text' onClick={handleOrdersInDeliveryClick}>
+            <Button variant='text' onClick={() => handleOptionsClick('in_delivery')}>
               Orders in delivery
             </Button>
           )}
           {isSellerVerified() && (
-            <Button variant='text' onClick={handleDeliveredOrdersClick}>
+            <Button variant='text' onClick={() => handleOptionsClick('delivered')}>
               Delivered orders
             </Button>
           )}
         </div>
       </Drawer>
 
-      {<div className={styles.dashboard_div}>{content}</div>}
+      {<div>{content}</div>}
     </div>
   )
 }

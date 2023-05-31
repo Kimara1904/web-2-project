@@ -2,13 +2,16 @@ import { BrowserRouter } from 'react-router-dom'
 
 import { configureAxiosRequestInterceptors } from './services/ServiceConfig'
 import AppContent from './AppContent'
+import { DashContextProvider } from './store/dashboard-context'
 
 function App() {
   configureAxiosRequestInterceptors()
 
   return (
     <BrowserRouter>
-      <AppContent />
+      <DashContextProvider>
+        <AppContent />
+      </DashContextProvider>
     </BrowserRouter>
   )
 }
