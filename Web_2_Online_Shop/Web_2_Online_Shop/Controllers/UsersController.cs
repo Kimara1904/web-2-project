@@ -45,7 +45,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("verify")]
+        [HttpGet("verified")]
         public async Task<ActionResult<List<UserDTO>>> GetVerifiedSellers()
         {
             var result = await _userService.GetVerifiedSellers();
@@ -63,7 +63,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPut("verified")]
+        [HttpPut("verify")]
         public async Task<ActionResult<string>> VerifyUser(UserVerifyDTO userVerify)
         {
             await _userService.VerifySeller(userVerify);
