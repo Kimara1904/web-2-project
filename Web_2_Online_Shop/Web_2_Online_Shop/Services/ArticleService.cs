@@ -23,6 +23,17 @@ namespace Web_2_Online_Shop.Services
             var article = _mapper.Map<Article>(newArticle);
             article.SellerId = id;
 
+            if (newArticle.ImageFile != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    newArticleInfo.ImageFile.CopyTo(ms);
+                    var fileBytes = ms.ToArray();
+
+                    article.Image = fileBytes;
+                }
+            }
+
             await _repository._articleRepository.Insert(article);
             await _repository.SaveChanges();
 
