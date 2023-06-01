@@ -16,6 +16,14 @@ namespace Web_2_Online_Shop.Controllers
 
         }
 
+        [HttpPost("google-authentication")]
+        [AllowAnonymous]
+        public async Task<ActionResult<TokenDTO>> GoogleAuthentication(GoogleAuthenticationDTO google)
+        {
+            string token = await _userService.AuthenticationByGoogle(google);
+            return Ok(new TokenDTO { Token = token });
+        }
+
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult<TokenDTO>> Login(LoginDTO loginUser)

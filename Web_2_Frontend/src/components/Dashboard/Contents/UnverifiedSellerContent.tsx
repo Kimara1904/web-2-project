@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { AxiosError, isAxiosError } from 'axios'
 
-import SellerVerifyList from '../../../SellerVerifyList/SellerVerifyList'
+import SellerVerifyList from '../../SellerVerifyList/SellerVerifyList'
 import { User } from '../../../models/UserModels'
 import { getUnverifiedSeller } from '../../../services/UserService'
 

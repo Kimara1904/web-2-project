@@ -1,9 +1,9 @@
 import { Button, TableCell, TableRow } from '@mui/material'
 import { AxiosError, isAxiosError } from 'axios'
 
-import { SellerVerifyItemProperties } from '../models/Properties'
-import DefaultUserImage from '../images/default_user_picture.jpg'
-import { verifySeller } from '../services/UserService'
+import { SellerVerifyItemProperties } from '../../models/Properties'
+import DefaultUserImage from '../../images/default_user_picture.jpg'
+import { verifySeller } from '../../services/UserService'
 import styles from './SellerVerifyItem.module.css'
 
 const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
@@ -50,7 +50,7 @@ const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
               ? 'data:image/png;base64,' + props.seller.image
               : DefaultUserImage
           }
-          alt='Book cover'
+          alt='Profile_picture'
         />
       </TableCell>
       <TableCell component='th' scope='row'>

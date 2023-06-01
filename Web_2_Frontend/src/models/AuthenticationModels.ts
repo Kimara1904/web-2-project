@@ -13,3 +13,7 @@ export interface RegisterRequest {
   address: string
   role: string
 }
+
+export interface GoogleAuth {
+  token: string
+}

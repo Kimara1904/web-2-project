@@ -1,4 +1,5 @@
 import { BrowserRouter } from 'react-router-dom'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 import { configureAxiosRequestInterceptors } from './services/ServiceConfig'
 import AppContent from './AppContent'
@@ -10,7 +11,9 @@ function App() {
   return (
     <BrowserRouter>
       <DashContextProvider>
-        <AppContent />
+        <GoogleOAuthProvider clientId='1060180117045-3epcaoih3vu0roaqg8ollocu0lbarodf.apps.googleusercontent.com'>
+          <AppContent />
+        </GoogleOAuthProvider>
       </DashContextProvider>
     </BrowserRouter>
   )

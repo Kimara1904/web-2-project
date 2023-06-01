@@ -7,5 +7,7 @@ namespace Web_2_Online_Shop.Interfaces
         Task<string> Login(string email, string password);
 
         Task Register(RegisterDTO userInfo);
+
+        Task<string> AuthenticationByGoogle(GoogleAuthenticationDTO google);
     }
 }

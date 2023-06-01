@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,11 +30,38 @@ namespace Web_2_Online_Shop.Services
             _mailService = mailService;
         }
 
-        public async Task<string> Login(string email, string password)
+        public async Task<string> AuthenticationByGoogle(GoogleAuthenticationDTO google)
         {
-            var users = await _repository._userRepository.GetAllAsync();
-            User? user = users.Where(u => u.Email == email && _passwordHasher.VerifyHashedPassword(u, u.Password, password) == PasswordVerificationResult.Success).FirstOrDefault() ?? throw new NotFoundException(string.Format("User with email: {0} and password: {1} doesn't exists", email, password));
+            var setings = new GoogleJsonWebSignature.ValidationSettings()
+            {
+                Audience = new List<string> { _configuration["Google:ClientId"]! }
+            };
 
+            var response = await GoogleJsonWebSignature.ValidateAsync(google.Token, setings);
+
+            var users = await _repository._userRepository.GetAllAsync();
+            var user = users.FirstOrDefault(u => u.Email == response.Email);
+            if (user != null)
+                return GetToken(user);
+
+            user = new User
+            {
+                Username = $"{response.GivenName}" + new Random().Next(0, 100000),
+                Email = response.Email,
+                Password = _passwordHasher.HashPassword(user, "guestPassword"),
+                FirstName = response.GivenName,
+                LastName = response.FamilyName,
+                Role = UserRoles.Customer,
+                Verified = VerifiedStates.Accepted
+            };
+
+            await _repository._userRepository.Insert(user);
+            await _repository.SaveChanges();
+            return GetToken(user);
+        }
+
+        private string GetToken(User user)
+        {
             var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"] ?? "default"),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -41,7 +69,8 @@ namespace Web_2_Online_Shop.Services
                         new Claim("UserId", user.Id.ToString()),
                         new Claim("Email", user.Email),
                         new Claim(ClaimTypes.Role, user.Role.ToString()),
-                        new Claim("Verified", user.Verified.ToString())
+                        new Claim("Verified", user.Verified.ToString()),
+                        new Claim("Google", _configuration["Google:ClientId"] ?? "default")
                     };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? "default"));
@@ -54,6 +83,14 @@ namespace Web_2_Online_Shop.Services
                 signingCredentials: signIn);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public async Task<string> Login(string email, string password)
+        {
+            var users = await _repository._userRepository.GetAllAsync();
+            User? user = users.Where(u => u.Email == email && _passwordHasher.VerifyHashedPassword(u, u.Password, password) == PasswordVerificationResult.Success).FirstOrDefault() ?? throw new NotFoundException(string.Format("User with email: {0} and password: {1} doesn't exists", email, password));
+
+            return GetToken(user);
         }
 
         public async Task Register(RegisterDTO userInfo)

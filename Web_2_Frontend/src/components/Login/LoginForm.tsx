@@ -4,8 +4,9 @@ import jwtDecode from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
 import { AxiosError, isAxiosError } from 'axios'
 import { Button, TextField, Typography } from '@mui/material'
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
 
-import { login } from '../../services/AuthenticationService'
+import { googleAuth, login } from '../../services/AuthenticationService'
 import { Jwt, roleKey } from '../../models/TokenModel'
 import styles from './LoginForm.module.css'
 
@@ -61,6 +62,20 @@ const LoginForm = () => {
       })
   }
 
+  const handleSuccess = (request: CredentialResponse) => {
+    googleAuth({ token: request.credential as string })
+      .then((response) => {
+        sessionStorage.setItem('token', response.data.token)
+        sessionStorage.setItem('role', jwtDecode<Jwt>(response.data.token)[roleKey])
+        sessionStorage.setItem('verified', jwtDecode<Jwt>(response.data.token).Verified)
+        navigate('/')
+      })
+      .catch((error: AxiosError) => {
+        if (isAxiosError(error)) {
+          setIsLoginError(true)
+        }
+      })
+  }
   return (
     <div className={styles.div_login_form}>
       <form className={styles.login_form} onSubmit={handleSubmit}>
@@ -93,9 +108,10 @@ const LoginForm = () => {
             Wrong credentials
           </Typography>
         )}
-        <Button type='submit' variant='contained' color='primary'>
+        <Button type='submit' variant='contained' color='primary' style={{ marginBottom: '16px' }}>
           Login
         </Button>
+        <GoogleLogin onSuccess={handleSuccess} />
       </form>
     </div>
   )

@@ -9,7 +9,7 @@ import {
   Typography
 } from '@mui/material'
 
-import { SellerVerifyListProperties } from '../models/Properties'
+import { SellerVerifyListProperties } from '../../models/Properties'
 import SellerVerifyItem from './SellerVerifyItem'
 
 const SellerVerifyList = (props: SellerVerifyListProperties) => {
