@@ -6,14 +6,14 @@ import { baseUrl } from './ServiceConfig'
 
 const url = `${baseUrl}/api/authentication/`
 
-export const login = (request: LoginRequest): Promise<AxiosResponse<TokenResponse>> => {
-  return axios.post<TokenResponse>(`${url}login`, request)
+export const login = async (request: LoginRequest): Promise<AxiosResponse<TokenResponse>> => {
+  return await axios.post<TokenResponse>(`${url}login`, request)
 }
 
-export const register = (request: RegisterRequest): Promise<AxiosResponse<string>> => {
-  return axios.post<string>(`${url}register`, request)
+export const register = async (request: RegisterRequest): Promise<AxiosResponse<string>> => {
+  return await axios.post<string>(`${url}register`, request)
 }
 
-export const googleAuth = (request: GoogleAuth): Promise<AxiosResponse<TokenResponse>> => {
-  return axios.post<TokenResponse>(`${url}google-authentication`, request)
+export const googleAuth = async (request: GoogleAuth): Promise<AxiosResponse<TokenResponse>> => {
+  return await axios.post<TokenResponse>(`${url}google-authentication`, request)
 }

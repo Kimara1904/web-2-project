@@ -5,14 +5,14 @@ import { User, UserVerify } from '../models/UserModels'
 
 const url = `${baseUrl}/api/users`
 
-export const getVerifiedSeller = (): Promise<AxiosResponse<User[]>> => {
-  return axios.get<User[]>(`${url}/verified`)
+export const getVerifiedSeller = async (): Promise<AxiosResponse<User[]>> => {
+  return await axios.get<User[]>(`${url}/verified`)
 }
 
-export const getUnverifiedSeller = (): Promise<AxiosResponse<User[]>> => {
-  return axios.get<User[]>(`${url}/unverified`)
+export const getUnverifiedSeller = async (): Promise<AxiosResponse<User[]>> => {
+  return await axios.get<User[]>(`${url}/unverified`)
 }
 
-export const verifySeller = (request: UserVerify): Promise<AxiosResponse<string>> => {
-  return axios.put<string>(`${url}/verify`, request)
+export const verifySeller = async (request: UserVerify): Promise<AxiosResponse<string>> => {
+  return await axios.put<string>(`${url}/verify`, request)
 }
