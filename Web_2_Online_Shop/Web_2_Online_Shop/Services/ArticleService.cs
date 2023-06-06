@@ -27,7 +27,7 @@ namespace Web_2_Online_Shop.Services
             {
                 using (var ms = new MemoryStream())
                 {
-                    newArticleInfo.ImageFile.CopyTo(ms);
+                    newArticle.ImageFile.CopyTo(ms);
                     var fileBytes = ms.ToArray();
 
                     article.Image = fileBytes;

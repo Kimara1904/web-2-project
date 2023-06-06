@@ -40,7 +40,7 @@ namespace Web_2_Online_Shop.Controllers
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
         [HttpPost]
-        public async Task<ActionResult<ArticleDTO>> Create(CreateArticleDTO newArticle)
+        public async Task<ActionResult<ArticleDTO>> Create([FromForm] CreateArticleDTO newArticle)
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
             var ret = await _articleService.CreateArticle(id, newArticle);
