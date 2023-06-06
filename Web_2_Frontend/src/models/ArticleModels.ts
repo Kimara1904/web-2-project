@@ -6,3 +6,11 @@ export interface Article {
   description: string
   image: string
 }
+
+export interface CreateArticle {
+  name: string
+  price: number
+  amount: number
+  description: string
+  imageFile?: string
+}

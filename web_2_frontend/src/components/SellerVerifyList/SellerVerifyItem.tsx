@@ -47,7 +47,7 @@ const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
           className={styles.user_verify_image}
           src={
             props.seller.image !== ''
-              ? 'data:image/png;base64,' + props.seller.image
+              ? `data:image/png;base64,${props.seller.image}`
               : DefaultUserImage
           }
           alt='Profile_picture'
