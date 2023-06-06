@@ -12,7 +12,7 @@ import {
 } from '@mui/material'
 
 import { OrderListProperties } from '../../models/Properties'
-import { isAdmin } from '../../helpers/TokenHelpers'
+import { isAdmin } from '../../helpers/AuthHelper'
 
 const OrderList = (prop: OrderListProperties) => {
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -46,7 +46,7 @@ const OrderList = (prop: OrderListProperties) => {
       <TableBody>
         <TableRow>
           <TableCell align='center' colSpan={6}>
-            <Typography variant='h2' align='center' style={{ marginBottom: '16px' }}>
+            <Typography variant='body2' align='center' style={{ marginBottom: '16px' }}>
               There is no orders
             </Typography>
           </TableCell>

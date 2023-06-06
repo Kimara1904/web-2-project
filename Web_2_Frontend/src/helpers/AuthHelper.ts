@@ -15,6 +15,20 @@ export const isSellerVerified = () => {
   )
 }
 
+export const isSellerWaiting = () => {
+  return (
+    sessionStorage.getItem('role') === UserRole.Seller &&
+    sessionStorage.getItem('verified') === 'Wait'
+  )
+}
+
+export const isSellerDenied = () => {
+  return (
+    sessionStorage.getItem('role') === UserRole.Seller &&
+    sessionStorage.getItem('verified') === 'Denied'
+  )
+}
+
 export const isCustomer = () => {
   return sessionStorage.getItem('role') === UserRole.Customer
 }

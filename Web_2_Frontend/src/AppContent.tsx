@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { AccountCircle } from '@mui/icons-material'
 
 import AppRouter from './routing/AppRouter'
-import { isUserLoggedIn } from './helpers/TokenHelpers'
+import { isUserLoggedIn } from './helpers/AuthHelper'
+import DashContext from './store/dashboard-context'
 
 const AppContent = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const contentContext = useContext(DashContext)
 
   const navigation = useNavigate()
 
@@ -32,6 +34,7 @@ const AppContent = () => {
 
   const handleLogoutClick = () => {
     sessionStorage.clear()
+    contentContext.setContent('')
     handleCloseMenu()
   }
 

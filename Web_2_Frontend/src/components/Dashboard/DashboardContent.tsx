@@ -2,12 +2,15 @@ import { ReactNode, useContext } from 'react'
 
 import { Button, Drawer } from '@mui/material'
 
-import { isAdmin, isSellerVerified } from '../../helpers/TokenHelpers'
+import { isAdmin, isSellerVerified } from '../../helpers/AuthHelper'
 import styles from './DashboardContent.module.css'
 import AllOrderContent from './Contents/AllOrderContent'
 import VerifiedSellerContent from './Contents/VerifiedSellerContent'
 import UnverifiedSellerContent from './Contents/UnverifiedSellerContent'
 import DashContext from '../../store/dashboard-context'
+import OrdersInDeliveryContent from './Contents/OrdersInDeliveryContent'
+import DeliveredOrdersContent from './Contents/DeliveredOrdersContent'
+import ArticleContent from './Contents/ArticleContent'
 
 const DashboardContent = () => {
   const contentContext = useContext(DashContext)
@@ -27,11 +30,11 @@ const DashboardContent = () => {
     contentContext.content === 'articles' ||
     (isSellerVerified() && contentContext.content === '')
   ) {
-    // articles
+    content = <ArticleContent />
   } else if (contentContext.content === 'in_delivery') {
-    // in delivery orders
+    content = <OrdersInDeliveryContent />
   } else if (contentContext.content === 'delivered') {
-    // delivered orders
+    content = <DeliveredOrdersContent />
   } else {
     //customers dashboard
   }
