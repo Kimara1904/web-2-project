@@ -30,7 +30,7 @@ namespace Web_2_Online_Shop.Controllers
         }
 
         [Authorize(Roles = "Seller", Policy = "VerifiedUserOnly")]
-        [HttpGet("all-my")]
+        [HttpGet("all-sellers")]
         public async Task<ActionResult<List<ArticleDTO>>> GetAllMy()
         {
             var id = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
