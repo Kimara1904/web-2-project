@@ -4,7 +4,7 @@ export interface Article {
   price: number
   amount: number
   description: string
-  image: string
+  image?: string
 }
 
 export interface CreateArticle {
