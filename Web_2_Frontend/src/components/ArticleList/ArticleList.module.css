@@ -1,0 +1,13 @@
+.article_list {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 48px;
+}
+
+.article_item img{
+    width: 175px;
+    height: 175px;
+    object-fit: cover;
+}
