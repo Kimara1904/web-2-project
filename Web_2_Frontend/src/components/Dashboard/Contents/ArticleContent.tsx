@@ -7,6 +7,7 @@ import ArticleForm from '../../ArticleForm/ArticleForm'
 import ArticleList from '../../ArticleList/ArticleList'
 import { getSellersArticle } from '../../../services/ArticleService'
 import { Article } from '../../../models/ArticleModels'
+import styles from './ArticleContent.module.css'
 
 const ArticleContent = () => {
   const [isFormVisible, setIsFormVisible] = useState(false)
@@ -33,8 +34,12 @@ const ArticleContent = () => {
   }
 
   return (
-    <div>
-      <Button variant='contained' onClick={handleClickButton}>
+    <div className={styles.article_content}>
+      <Button
+        className={styles.article_content_button}
+        variant='contained'
+        onClick={handleClickButton}
+      >
         {isFormVisible ? '-' : '+'}
       </Button>
       {isFormVisible && <ArticleForm />}

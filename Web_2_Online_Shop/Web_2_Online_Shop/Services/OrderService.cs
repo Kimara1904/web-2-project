@@ -68,7 +68,14 @@ namespace Web_2_Online_Shop.Services
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
             var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Include(o => o.Buyer).ToList();
 
-            return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
+            var returnValue = _mapper.Map<List<Order>, List<OrderDTO>>(orders);
+
+            returnValue.ForEach(rv =>
+            {
+                rv.DeliveryPrice = CalculateDeliveryPrice(orders.Where(o => o.Id == rv.Id).Single().Items);
+                rv.ItemPrice = CalculateItemPrice(orders.Where(o => o.Id == rv.Id).Single().Items);
+            });
+            return returnValue;
         }
 
         public async Task<List<OrderDTO>> GetAllDeliveredForSeller(int id)
@@ -77,7 +84,14 @@ namespace Web_2_Online_Shop.Services
             var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article)
                 .Where(o => o.Items.Any(i => i.Article.SellerId == id) && o.DeliveryTime <= DateTime.Now && !o.IsCancled).ToList();
 
-            return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
+            var returnValue = _mapper.Map<List<Order>, List<OrderDTO>>(orders);
+
+            returnValue.ForEach(rv =>
+            {
+                rv.DeliveryPrice = CalculateDeliveryPrice(orders.Where(o => o.Id == rv.Id).Single().Items);
+                rv.ItemPrice = CalculateItemPrice(orders.Where(o => o.Id == rv.Id).Single().Items);
+            });
+            return returnValue;
         }
 
         public async Task<List<OrderDTO>> GetAllInDeliveryForSeller(int id)
@@ -85,7 +99,15 @@ namespace Web_2_Online_Shop.Services
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
             var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article)
                 .Where(o => o.Items.Any(i => i.Article.SellerId == id) && o.DeliveryTime > DateTime.Now && !o.IsCancled).ToList();
-            return _mapper.Map<List<Order>, List<OrderDTO>>(orders);
+
+            var returnValue = _mapper.Map<List<Order>, List<OrderDTO>>(orders);
+
+            returnValue.ForEach(rv =>
+            {
+                rv.DeliveryPrice = CalculateDeliveryPrice(orders.Where(o => o.Id == rv.Id).Single().Items);
+                rv.ItemPrice = CalculateItemPrice(orders.Where(o => o.Id == rv.Id).Single().Items);
+            });
+            return returnValue;
         }
 
         public async Task<List<MyOrderDTO>> GetAllMy(int id)
@@ -93,7 +115,26 @@ namespace Web_2_Online_Shop.Services
             var ordersQuery = await _repository._orderRepository.GetAllAsync();
             var orders = ordersQuery.Include(o => o.Items).ThenInclude(i => i.Article).Where(o => o.BuyerId == id && !o.IsCancled).ToList();
 
-            return _mapper.Map<List<Order>, List<MyOrderDTO>>(orders);
+            var returnValue = _mapper.Map<List<Order>, List<MyOrderDTO>>(orders);
+
+            returnValue.ForEach(rv =>
+            {
+                rv.DeliveryPrice = CalculateDeliveryPrice(orders.Where(o => o.Id == rv.Id).Single().Items);
+                rv.ItemPrice = CalculateItemPrice(orders.Where(o => o.Id == rv.Id).Single().Items);
+            });
+            return returnValue;
+        }
+
+        private double CalculateDeliveryPrice(List<OrderItem> items)
+        {
+            return items.Select(i => i.Article.SellerId).Distinct().Count() * 100.00;
+        }
+
+        private double CalculateItemPrice(List<OrderItem> items)
+        {
+            var price = 0.0;
+            items.ForEach(i => price += i.Article.Price);
+            return price;
         }
     }
 }

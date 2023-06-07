@@ -69,6 +69,7 @@ const OrderList = (prop: OrderListProperties) => {
                 </span>
               ))}
             </TableCell>
+            <TableCell align='center'>{order.itemPrice + order.deliveryPrice}</TableCell>
             <TableCell align='right'>{order.address}</TableCell>
             <TableCell align='right'>
               {order.isCancled
@@ -93,6 +94,7 @@ const OrderList = (prop: OrderListProperties) => {
               <TableCell>Id</TableCell>
               <TableCell align='right'>Buyer</TableCell>
               <TableCell align='center'>Items</TableCell>
+              <TableCell align='center'>Total Price</TableCell>
               <TableCell align='right'>Address</TableCell>
               <TableCell align='right'>Status</TableCell>
             </TableRow>
