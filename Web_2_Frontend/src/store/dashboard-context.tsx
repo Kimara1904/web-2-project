@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { DashboardContextModel, DashboardProviderModel } from '../models/ContextModels'
+import { DashboardContextModel, ProviderModel } from '../models/ContextModels'
 
 const DashContext = React.createContext<DashboardContextModel>({
   content: '',
@@ -9,7 +9,7 @@ const DashContext = React.createContext<DashboardContextModel>({
   }
 })
 
-export const DashContextProvider: React.FC<DashboardProviderModel> = ({ children }) => {
+export const DashContextProvider: React.FC<ProviderModel> = ({ children }) => {
   const [content, setContent] = useState('')
 
   useEffect(() => {

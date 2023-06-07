@@ -2,7 +2,7 @@ import { ReactNode, useContext } from 'react'
 
 import { Button, Drawer } from '@mui/material'
 
-import { isAdmin, isSellerVerified } from '../../helpers/AuthHelper'
+import { isAdmin, isCustomer, isSellerVerified } from '../../helpers/AuthHelper'
 import styles from './DashboardContent.module.css'
 import AllOrderContent from './Contents/AllOrderContent'
 import VerifiedSellerContent from './Contents/VerifiedSellerContent'
@@ -11,6 +11,7 @@ import DashContext from '../../store/dashboard-context'
 import OrdersInDeliveryContent from './Contents/OrdersInDeliveryContent'
 import DeliveredOrdersContent from './Contents/DeliveredOrdersContent'
 import ArticleContent from './Contents/ArticleContent'
+import PlaceOrderContent from './Contents/PlaceOrderContent'
 
 const DashboardContent = () => {
   const contentContext = useContext(DashContext)
@@ -35,8 +36,13 @@ const DashboardContent = () => {
     content = <OrdersInDeliveryContent />
   } else if (contentContext.content === 'delivered') {
     content = <DeliveredOrdersContent />
-  } else {
-    //customers dashboard
+  } else if (
+    contentContext.content === 'place_order' ||
+    (isCustomer() && contentContext.content === '')
+  ) {
+    content = <PlaceOrderContent />
+  } else if (contentContext.content === 'my_orders') {
+    //my orders
   }
 
   return (
@@ -81,6 +87,16 @@ const DashboardContent = () => {
           {isSellerVerified() && (
             <Button variant='text' onClick={() => handleOptionsClick('delivered')}>
               Delivered orders
+            </Button>
+          )}
+          {isCustomer() && (
+            <Button variant='text' onClick={() => handleOptionsClick('place_order')}>
+              Place order
+            </Button>
+          )}
+          {isCustomer() && (
+            <Button variant='text' onClick={() => handleOptionsClick('my_orders')}>
+              My orders
             </Button>
           )}
         </div>

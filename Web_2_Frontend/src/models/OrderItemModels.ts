@@ -5,3 +5,8 @@ export interface OrderItem {
   amount: number
   article: Article
 }
+
+export interface CreateItem {
+  articleId: number
+  amount: number
+}

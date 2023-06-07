@@ -4,6 +4,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import { configureAxiosRequestInterceptors } from './services/ServiceConfig'
 import AppContent from './AppContent'
 import { DashContextProvider } from './store/dashboard-context'
+import { CartContextProvider } from './store/cart-context'
 
 function App() {
   configureAxiosRequestInterceptors()
@@ -11,9 +12,11 @@ function App() {
   return (
     <BrowserRouter>
       <DashContextProvider>
-        <GoogleOAuthProvider clientId='1060180117045-3epcaoih3vu0roaqg8ollocu0lbarodf.apps.googleusercontent.com'>
-          <AppContent />
-        </GoogleOAuthProvider>
+        <CartContextProvider>
+          <GoogleOAuthProvider clientId='1060180117045-3epcaoih3vu0roaqg8ollocu0lbarodf.apps.googleusercontent.com'>
+            <AppContent />
+          </GoogleOAuthProvider>
+        </CartContextProvider>
       </DashContextProvider>
     </BrowserRouter>
   )

@@ -275,6 +275,8 @@ const ArticleForm = () => {
             />
             <TextField
               id='ArticleDescription'
+              multiline
+              rows={4}
               type='text'
               label='Description'
               variant='outlined'

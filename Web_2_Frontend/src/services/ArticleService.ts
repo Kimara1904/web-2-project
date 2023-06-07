@@ -12,3 +12,7 @@ export const createArticle = async (request: FormData): Promise<AxiosResponse<Ar
 export const getSellersArticle = async (): Promise<AxiosResponse<Article[]>> => {
   return await axios.get<Article[]>(`${url}/all-sellers`)
 }
+
+export const getAllArticles = async (): Promise<AxiosResponse<Article[]>> => {
+  return await axios.get<Article[]>(`${url}`)
+}
