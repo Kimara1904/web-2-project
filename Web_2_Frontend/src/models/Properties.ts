@@ -1,4 +1,5 @@
 import { Article } from './ArticleModels'
+import { PickedItemInfo } from './OrderItemModels'
 import { Order } from './OrderModels'
 import { User } from './UserModels'
 
@@ -24,4 +25,8 @@ export interface ArticleListProperties {
 
 export interface ArticleItemProperties {
   article: Article
+}
+
+export interface PickedItemProperties {
+  item: PickedItemInfo
 }

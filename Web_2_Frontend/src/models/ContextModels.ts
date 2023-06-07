@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { CreateItem } from './OrderItemModels'
+import { PickedItemInfo } from './OrderItemModels'
 
 export interface DashboardContextModel {
   content: string
@@ -12,8 +12,8 @@ export interface ProviderModel {
 }
 
 export interface CartContextModel {
-  items: CreateItem[]
-  onAdd: (item: CreateItem) => void
+  items: PickedItemInfo[]
+  onAdd: (item: PickedItemInfo) => void
   onRemove: (id: number) => void
   onChange: (id: number, amount: number) => void
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { CartContextModel, ProviderModel } from '../models/ContextModels'
-import { CreateItem } from '../models/OrderItemModels'
+import { PickedItemInfo } from '../models/OrderItemModels'
 
 const CartContext = React.createContext<CartContextModel>({
   items: [],
@@ -17,9 +17,9 @@ const CartContext = React.createContext<CartContextModel>({
 })
 
 export const CartContextProvider: React.FC<ProviderModel> = ({ children }) => {
-  const [itemList, setItemList] = useState<CreateItem[]>([])
+  const [itemList, setItemList] = useState<PickedItemInfo[]>([])
 
-  const handleAddItem = (item: CreateItem) => {
+  const handleAddItem = (item: PickedItemInfo) => {
     setItemList((prevItems) => [...prevItems, item])
   }
 
