@@ -16,3 +16,7 @@ export const getSellersArticle = async (): Promise<AxiosResponse<Article[]>> => 
 export const getAllArticles = async (): Promise<AxiosResponse<Article[]>> => {
   return await axios.get<Article[]>(`${url}`)
 }
+
+export const getArticleById = async (id: number): Promise<AxiosResponse<Article>> => {
+  return await axios.get<Article>(`${url}/${id}`)
+}

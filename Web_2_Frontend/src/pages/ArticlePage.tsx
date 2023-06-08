@@ -1,5 +1,7 @@
+import ArticleDetail from '../components/ArticleDetail/ArticleDetail'
+
 const ArticlePage = () => {
-  return <div>Article Page</div>
+  return <ArticleDetail />
 }
 
 export default ArticlePage

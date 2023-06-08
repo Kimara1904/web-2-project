@@ -1,10 +1,13 @@
 import { ChangeEvent, createRef, useState } from 'react'
 
 import { Button, TextField, Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 
 import articleDefault from '../../images/default_article_pictures.png'
 import styles from './ArticleForm.module.css'
 import { CreateArticle } from '../../models/ArticleModels'
+import { createArticle } from '../../services/ArticleService'
 
 const ArticleForm = () => {
   const [errorNameMessages, setErrorNameMessages] = useState('Name is required')
@@ -21,6 +24,8 @@ const ArticleForm = () => {
   const fileInputRef = createRef<HTMLInputElement>()
   const nameRef = createRef<HTMLInputElement>()
   const descriptionRef = createRef<HTMLInputElement>()
+
+  const navigate = useNavigate()
 
   const handleBlurName = () => {
     const nameLength = nameRef.current?.value.trim().length as number
@@ -187,6 +192,16 @@ const ArticleForm = () => {
     if (request.imageFile) {
       formData.append('imageFile', base64ToBlob(request.imageFile))
     }
+
+    createArticle(formData)
+      .then((response) => {
+        navigate('/article_detail', { state: { article: response.data } })
+      })
+      .catch((error) => {
+        if (isAxiosError(error)) {
+          //alert
+        }
+      })
   }
   return (
     <div className={styles.article_div_form}>
@@ -215,6 +230,14 @@ const ArticleForm = () => {
                 backgroundSize: 'cover'
               }}
             />
+            <Button
+              type='submit'
+              variant='contained'
+              color='primary'
+              style={{ marginTop: '16px', width: '100px' }}
+            >
+              Create
+            </Button>
           </div>
           <div className={styles.article_inputs}>
             <TextField
@@ -294,9 +317,6 @@ const ArticleForm = () => {
             />
           </div>
         </div>
-        <Button type='submit' variant='contained' color='primary' style={{ marginBottom: '16px' }}>
-          Create
-        </Button>
       </form>
     </div>
   )

@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { IconButton, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
+import { useNavigate } from 'react-router-dom'
 
 import { ArticleItemProperties } from '../../models/Properties'
 import articleDefault from '../../images/default_article_pictures.png'
@@ -16,6 +17,8 @@ const ArticleItem = (prop: ArticleItemProperties) => {
   const [picked, setPicked] = useState(
     cartContext.items.some((item) => item.articleId === prop.article.id)
   )
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     setPicked(cartContext.items.some((item) => item.articleId === prop.article.id))
@@ -40,8 +43,22 @@ const ArticleItem = (prop: ArticleItemProperties) => {
     setPicked(true)
   }
 
+  const handleClickArticle = () => {
+    navigate('/article_detail', { state: { article: prop.article } })
+  }
+
   return (
-    <div className={styles.article_item}>
+    <div
+      className={styles.article_item}
+      onClick={handleClickArticle}
+      role='button'
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleClickArticle()
+        }
+      }}
+    >
       <img
         src={prop.article.image ? `data:image/png;base64,${prop.article.image}` : articleDefault}
         alt='article'
@@ -58,7 +75,7 @@ const ArticleItem = (prop: ArticleItemProperties) => {
           <IconButton
             color='primary'
             aria-label='add to shopping cart'
-            disabled={prop.article.amount > 0}
+            disabled={prop.article.amount <= 0}
             onClick={handleAddItemInCart}
           >
             <AddShoppingCartIcon />

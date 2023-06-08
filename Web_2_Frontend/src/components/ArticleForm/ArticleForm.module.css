@@ -12,6 +12,11 @@
     object-fit: cover;
 }
 
+.article_file {
+    display: flex;
+    flex-direction: column;
+}
+
 .article_form {
     display: flex;
     flex-direction: row;

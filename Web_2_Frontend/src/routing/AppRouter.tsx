@@ -17,7 +17,7 @@ const AppRouter = () => {
         <Route path='/dashboard' element={<DashboardPage />} />
         <Route path='/user_info' element={<ProfilePage />} />
         <Route path='/order_detail' element={<OrderDetailPage />} />
-        <Route path='/article' element={<ArticlePage />} />
+        <Route path='/article_detail' element={<ArticlePage />} />
       </Route>
       <Route path='/login' element={!isUserLoggedIn() ? <LoginPage /> : <Navigate to='/' />} />
       <Route
