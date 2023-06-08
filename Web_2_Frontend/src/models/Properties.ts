@@ -7,6 +7,10 @@ export interface OrderListProperties {
   orders: Order[]
 }
 
+export interface OrderItemProperties {
+  order: Order
+}
+
 export interface SellerVerifyListProperties {
   sellers: User[]
   verified: boolean

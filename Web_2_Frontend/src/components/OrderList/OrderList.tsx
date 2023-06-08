@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 
 import {
   Paper,
@@ -12,34 +12,10 @@ import {
 } from '@mui/material'
 
 import { OrderListProperties } from '../../models/Properties'
-import { isAdmin } from '../../helpers/AuthHelper'
+import { isCustomer } from '../../helpers/AuthHelper'
+import OrderItem from './OrderItem'
 
 const OrderList = (prop: OrderListProperties) => {
-  const [currentTime, setCurrentTime] = useState(new Date())
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 1000)
-
-    return () => {
-      clearInterval(intervalId)
-    }
-  }, [])
-  const isInDelivery = (date: Date) => {
-    return currentTime < date
-  }
-
-  const GetTimeUntilDelivery = (date: Date) => {
-    const timeDiff = date.getTime() - currentTime.getTime()
-    const hours = Math.floor(timeDiff / (1000 * 60 * 60))
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60))
-    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000)
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')}`
-  }
-
   let content: ReactNode = null
   if (prop.orders.length === 0) {
     content = (
@@ -57,30 +33,7 @@ const OrderList = (prop: OrderListProperties) => {
     content = (
       <TableBody>
         {prop.orders.map((order) => (
-          <TableRow key={order.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-            <TableCell component='th' scope='row'>
-              {order.id}
-            </TableCell>
-            <TableCell align='right'>{order.buyerUsername}</TableCell>
-            <TableCell align='center'>
-              {order.items.map((item) => (
-                <span key={item.id}>
-                  {item.article.name + ' x ' + item.amount.toString() + '; '}
-                </span>
-              ))}
-            </TableCell>
-            <TableCell align='center'>{order.itemPrice + order.deliveryPrice}</TableCell>
-            <TableCell align='right'>{order.address}</TableCell>
-            <TableCell align='right'>
-              {order.isCancled
-                ? 'Canceled'
-                : isInDelivery(new Date(order.deliveryTime))
-                ? isAdmin()
-                  ? 'In Delivery'
-                  : GetTimeUntilDelivery(new Date(order.deliveryTime))
-                : 'Delivered'}
-            </TableCell>
-          </TableRow>
+          <OrderItem key={order.id} order={order} />
         ))}
       </TableBody>
     )
@@ -92,11 +45,12 @@ const OrderList = (prop: OrderListProperties) => {
           <TableHead>
             <TableRow>
               <TableCell>Id</TableCell>
-              <TableCell align='right'>Buyer</TableCell>
+              {!isCustomer() && <TableCell align='right'>Buyer</TableCell>}
               <TableCell align='center'>Items</TableCell>
               <TableCell align='center'>Total Price</TableCell>
               <TableCell align='right'>Address</TableCell>
               <TableCell align='right'>Status</TableCell>
+              {isCustomer() && <TableCell />}
             </TableRow>
           </TableHead>
           {content}

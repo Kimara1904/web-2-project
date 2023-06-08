@@ -20,15 +20,17 @@ const ArticlePicker = (props: ArticleListProperties) => {
     width: 250
   }
   return (
-    <Carousel {...settings}>
-      {props.articles.map((article) => {
-        return (
-          <div key={article.id} className={styles.presenter}>
-            <ArticleItem key={article.id} article={article} />
-          </div>
-        )
-      })}
-    </Carousel>
+    <div className={styles.picker}>
+      <Carousel {...settings}>
+        {props.articles.map((article) => {
+          return (
+            <div key={article.id} className={styles.presenter}>
+              <ArticleItem key={article.id} article={article} />
+            </div>
+          )
+        })}
+      </Carousel>
+    </div>
   )
 }
 

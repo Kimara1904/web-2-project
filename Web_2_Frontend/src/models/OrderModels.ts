@@ -2,7 +2,7 @@ import { CreateItem, OrderItem } from './OrderItemModels'
 
 export interface Order {
   id: number
-  buyerUsername: string
+  buyerUsername?: string
   items: OrderItem[]
   itemPrice: number
   deliveryPrice: number

@@ -58,6 +58,7 @@ const ArticleItem = (prop: ArticleItemProperties) => {
           <IconButton
             color='primary'
             aria-label='add to shopping cart'
+            disabled={prop.article.amount > 0}
             onClick={handleAddItemInCart}
           >
             <AddShoppingCartIcon />

@@ -20,3 +20,7 @@ export const getDeliveredOrder = async (): Promise<AxiosResponse<Order[]>> => {
 export const createOrder = async (request: CreateOrder): Promise<AxiosResponse<Order>> => {
   return await axios.post<Order>(`${url}`, request)
 }
+
+export const getMyOrders = async (): Promise<AxiosResponse<Order[]>> => {
+  return await axios.get<Order[]>(`${url}/customers-orders`)
+}

@@ -12,6 +12,7 @@ import OrdersInDeliveryContent from './Contents/OrdersInDeliveryContent'
 import DeliveredOrdersContent from './Contents/DeliveredOrdersContent'
 import ArticleContent from './Contents/ArticleContent'
 import PlaceOrderContent from './Contents/PlaceOrderContent'
+import MyOrdersContent from './Contents/MyOrdersContent'
 
 const DashboardContent = () => {
   const contentContext = useContext(DashContext)
@@ -42,7 +43,7 @@ const DashboardContent = () => {
   ) {
     content = <PlaceOrderContent />
   } else if (contentContext.content === 'my_orders') {
-    //my orders
+    content = <MyOrdersContent />
   }
 
   return (

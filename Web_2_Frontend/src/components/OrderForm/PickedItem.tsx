@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 
 import { PickedItemProperties } from '../../models/Properties'
 import CartContext from '../../store/cart-context'
+import styles from './PickedItem.module.css'
 
 const PickedItem = (props: PickedItemProperties) => {
   const [amount, setAmount] = useState('1')
@@ -42,7 +43,7 @@ const PickedItem = (props: PickedItemProperties) => {
   }
 
   return (
-    <div>
+    <div className={styles.picked_item}>
       <Typography>{props.item.name}: </Typography>
       <TextField
         id='ArticleAmount'

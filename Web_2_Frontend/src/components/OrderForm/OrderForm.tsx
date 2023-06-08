@@ -8,6 +8,7 @@ import CartContext from '../../store/cart-context'
 import { CreateItem } from '../../models/OrderItemModels'
 import { CreateOrder } from '../../models/OrderModels'
 import { createOrder } from '../../services/OrderService'
+import styles from './OrderForm.module.css'
 
 const OrderForm = () => {
   const [isAddressError, setIsAddressError] = useState(false)
@@ -71,7 +72,7 @@ const OrderForm = () => {
   }
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={styles.order_form}>
         <div>
           {cartContext.items.map((item) => {
             return <PickedItem key={item.articleId} item={item} />
