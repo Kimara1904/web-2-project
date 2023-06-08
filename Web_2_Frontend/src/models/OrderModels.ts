@@ -1,4 +1,4 @@
-import { OrderItem } from './OrderItemModels'
+import { CreateItem, OrderItem } from './OrderItemModels'
 
 export interface Order {
   id: number
@@ -10,4 +10,10 @@ export interface Order {
   comment: string
   deliveryTime: string
   isCancled: boolean
+}
+
+export interface CreateOrder {
+  items: CreateItem[]
+  address: string
+  comment: string
 }

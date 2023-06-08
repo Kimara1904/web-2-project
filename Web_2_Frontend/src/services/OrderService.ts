@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 
-import { Order } from '../models/OrderModels'
+import { CreateOrder, Order } from '../models/OrderModels'
 import { baseUrl } from './ServiceConfig'
 
 const url = `${baseUrl}/api/orders`
@@ -15,4 +15,8 @@ export const getOrdersInDelivery = async (): Promise<AxiosResponse<Order[]>> => 
 
 export const getDeliveredOrder = async (): Promise<AxiosResponse<Order[]>> => {
   return await axios.get<Order[]>(`${url}/sellers-delivered`)
+}
+
+export const createOrder = async (request: CreateOrder): Promise<AxiosResponse<Order>> => {
+  return await axios.post<Order>(`${url}`, request)
 }
