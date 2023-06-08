@@ -16,3 +16,7 @@ export const getUnverifiedSeller = async (): Promise<AxiosResponse<User[]>> => {
 export const verifySeller = async (request: UserVerify): Promise<AxiosResponse<string>> => {
   return await axios.put<string>(`${url}/verify`, request)
 }
+
+export const getMyProfile = async (): Promise<AxiosResponse<User>> => {
+  return await axios.get<User>(`${url}/my-profile`)
+}

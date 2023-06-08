@@ -1,7 +1,7 @@
 import ArticleDetail from '../components/ArticleDetail/ArticleDetail'
 
-const ArticlePage = () => {
+const ArticleDetailPage = () => {
   return <ArticleDetail />
 }
 
-export default ArticlePage
+export default ArticleDetailPage

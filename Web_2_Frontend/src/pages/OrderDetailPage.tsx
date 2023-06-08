@@ -1,5 +1,7 @@
+import OrderDetail from '../components/OrderDetail/OrderDetail'
+
 const OrderDetailPage = () => {
-  return <div>Order Detail Page</div>
+  return <OrderDetail />
 }
 
 export default OrderDetailPage

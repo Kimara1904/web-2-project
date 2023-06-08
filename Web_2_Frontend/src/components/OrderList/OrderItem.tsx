@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 
 import { Button, TableCell, TableRow } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 import { OrderItemProperties } from '../../models/Properties'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
 
 const OrderItem = (props: OrderItemProperties) => {
   const [currentTime, setCurrentTime] = useState(new Date())
+  const navigate = useNavigate()
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentTime(new Date())
@@ -29,8 +32,16 @@ const OrderItem = (props: OrderItemProperties) => {
       .toString()
       .padStart(2, '0')}`
   }
+
+  const handleRowClick = () => {
+    navigate('/order_detail', { state: { order: props.order } })
+  }
+
   return (
-    <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+    <TableRow
+      sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: 'pointer' }}
+      onClick={handleRowClick}
+    >
       <TableCell component='th' scope='row'>
         {props.order.id}
       </TableCell>
@@ -58,15 +69,16 @@ const OrderItem = (props: OrderItemProperties) => {
             : GetTimeUntilDelivery(new Date(props.order.deliveryTime))
           : 'Delivered'}
       </TableCell>
-      {isCustomer() && (
-        <TableCell>
-          {!props.order.isCancled && (
+      {isCustomer() &&
+        (!props.order.isCancled && isInDelivery(new Date(props.order.deliveryTime)) ? (
+          <TableCell align='right'>
             <Button variant='contained' color='primary'>
               Cancle
             </Button>
-          )}
-        </TableCell>
-      )}
+          </TableCell>
+        ) : (
+          <TableCell />
+        ))}
     </TableRow>
   )
 }
