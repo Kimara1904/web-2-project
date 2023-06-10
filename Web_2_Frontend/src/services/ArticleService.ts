@@ -20,3 +20,14 @@ export const getAllArticles = async (): Promise<AxiosResponse<Article[]>> => {
 export const getArticleById = async (id: number): Promise<AxiosResponse<Article>> => {
   return await axios.get<Article>(`${url}/${id}`)
 }
+
+export const modifyArticle = async (
+  id: number,
+  request: FormData
+): Promise<AxiosResponse<Article>> => {
+  return await axios.patch<Article>(`${url}/${id}`, request)
+}
+
+export const deleteArticle = async (id: number): Promise<AxiosResponse> => {
+  return await axios.delete(`${url}/${id}`)
+}

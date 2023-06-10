@@ -1,22 +1,27 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { IconButton, Typography } from '@mui/material'
+import { IconButton, Modal, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
+import EditIcon from '@mui/icons-material/Edit'
 import { useNavigate } from 'react-router-dom'
+import { AxiosError, isAxiosError } from 'axios'
 
 import { ArticleItemProperties } from '../../models/Properties'
 import articleDefault from '../../images/default_article_pictures.png'
 import styles from './ArticleList.module.css'
-import { isCustomer } from '../../helpers/AuthHelper'
+import { isCustomer, isSellerVerified } from '../../helpers/AuthHelper'
 import CartContext from '../../store/cart-context'
 import { PickedItemInfo } from '../../models/OrderItemModels'
+import ArticleForm from '../ArticleForm/ArticleForm'
+import { deleteArticle } from '../../services/ArticleService'
 
 const ArticleItem = (prop: ArticleItemProperties) => {
   const cartContext = useContext(CartContext)
   const [picked, setPicked] = useState(
     cartContext.items.some((item) => item.articleId === prop.article.id)
   )
+  const [isShownEditForm, setIsShownEditForm] = useState(false)
 
   const navigate = useNavigate()
 
@@ -47,40 +52,86 @@ const ArticleItem = (prop: ArticleItemProperties) => {
     navigate('/article_detail', { state: { article: prop.article } })
   }
 
-  return (
-    <div
-      className={styles.article_item}
-      onClick={handleClickArticle}
-      role='button'
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClickArticle()
+  const handleClickEdit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation()
+    setIsShownEditForm(true)
+  }
+
+  const handleCloseForm = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation()
+    setIsShownEditForm(false)
+  }
+
+  const handleDeleteArticle = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation()
+    deleteArticle(prop.article?.id)
+      .then(() => {
+        //uspesan alert
+        window.location.reload()
+      })
+      .catch((error: AxiosError) => {
+        if (isAxiosError(error)) {
+          //neuspesan alert
         }
-      }}
-    >
-      <img
-        src={prop.article.image ? `data:image/png;base64,${prop.article.image}` : articleDefault}
-        alt='article'
-      />
-      <Typography>{prop.article.name}</Typography>
-      <Typography>{`${prop.article.price} RSD`}</Typography>
-      <Typography>{`Amount: ${prop.article.amount}`}</Typography>
-      {isCustomer() &&
-        (picked ? (
-          <IconButton aria-label='delete' color='primary' onClick={handleRemoveItemFromCart}>
-            <DeleteIcon />
-          </IconButton>
-        ) : (
-          <IconButton
-            color='primary'
-            aria-label='add to shopping cart'
-            disabled={prop.article.amount <= 0}
-            onClick={handleAddItemInCart}
-          >
-            <AddShoppingCartIcon />
-          </IconButton>
-        ))}
+      })
+  }
+
+  return (
+    <div>
+      <div
+        className={styles.article_item}
+        onClick={handleClickArticle}
+        role='button'
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            handleClickArticle()
+          }
+        }}
+      >
+        <img
+          src={prop.article.image ? `data:image/png;base64,${prop.article.image}` : articleDefault}
+          alt='article'
+        />
+        <Typography>{prop.article.name}</Typography>
+        <Typography>{`${prop.article.price} RSD`}</Typography>
+        <Typography>{`Amount: ${prop.article.amount}`}</Typography>
+        {isCustomer() &&
+          (picked ? (
+            <IconButton aria-label='delete' color='primary' onClick={handleRemoveItemFromCart}>
+              <DeleteIcon />
+            </IconButton>
+          ) : (
+            <IconButton
+              color='primary'
+              aria-label='add to shopping cart'
+              disabled={prop.article.amount <= 0}
+              onClick={handleAddItemInCart}
+            >
+              <AddShoppingCartIcon />
+            </IconButton>
+          ))}
+        {isSellerVerified() && (
+          <div>
+            <IconButton aria-label='edit' onClick={handleClickEdit}>
+              <EditIcon />
+            </IconButton>
+            <IconButton aria-label='delete' onClick={handleDeleteArticle}>
+              <DeleteIcon />
+            </IconButton>
+          </div>
+        )}
+      </div>
+      <Modal
+        open={isShownEditForm}
+        onClose={handleCloseForm}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <div>
+          <ArticleForm article={prop.article} afterSucc='navigate' />
+        </div>
+      </Modal>
     </div>
   )
 }

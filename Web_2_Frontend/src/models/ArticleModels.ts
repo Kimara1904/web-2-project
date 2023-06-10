@@ -14,3 +14,11 @@ export interface CreateArticle {
   description: string
   imageFile?: string
 }
+
+export interface EditArticle {
+  name?: string
+  price: number
+  amount: number
+  description?: string
+  imageFile?: string
+}

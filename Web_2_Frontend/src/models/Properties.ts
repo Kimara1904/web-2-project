@@ -34,3 +34,9 @@ export interface ArticleItemProperties {
 export interface PickedItemProperties {
   item: PickedItemInfo
 }
+
+export interface ArticleFormProperties {
+  article?: Article
+  onChangeValue?: (article: Article) => void
+  afterSucc?: 'navigate' | 'changeValue'
+}

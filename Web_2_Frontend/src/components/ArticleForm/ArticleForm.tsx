@@ -1,4 +1,4 @@
-import { ChangeEvent, createRef, useState } from 'react'
+import { ChangeEvent, createRef, useEffect, useState } from 'react'
 
 import { Button, TextField, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
@@ -6,10 +6,11 @@ import { isAxiosError } from 'axios'
 
 import articleDefault from '../../images/default_article_pictures.png'
 import styles from './ArticleForm.module.css'
-import { CreateArticle } from '../../models/ArticleModels'
-import { createArticle } from '../../services/ArticleService'
+import { CreateArticle, EditArticle } from '../../models/ArticleModels'
+import { modifyArticle, createArticle } from '../../services/ArticleService'
+import { ArticleFormProperties } from '../../models/Properties'
 
-const ArticleForm = () => {
+const ArticleForm = (props: ArticleFormProperties) => {
   const [errorNameMessages, setErrorNameMessages] = useState('Name is required')
   const [errors, setErrors] = useState({
     isNameError: false,
@@ -17,18 +18,28 @@ const ArticleForm = () => {
     isAmountError: false,
     isDescriptionError: false
   })
+  const [name, setName] = useState('')
   const [price, setPrice] = useState('0')
   const [amount, setAmount] = useState('0')
+  const [description, setDescription] = useState('')
   const [filePreview, setFilePreview] = useState<string>()
 
   const fileInputRef = createRef<HTMLInputElement>()
-  const nameRef = createRef<HTMLInputElement>()
-  const descriptionRef = createRef<HTMLInputElement>()
 
   const navigate = useNavigate()
 
+  useEffect(() => {
+    if (props.article) {
+      setName(props.article.name)
+      setPrice(props.article.price.toString())
+      setAmount(props.article.amount.toString())
+      setDescription(props.article.description)
+      setFilePreview(props.article.image)
+    }
+  }, [props.article])
+
   const handleBlurName = () => {
-    const nameLength = nameRef.current?.value.trim().length as number
+    const nameLength = name.trim().length
     if (nameLength === 0) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -63,7 +74,7 @@ const ArticleForm = () => {
   }
 
   const handleBlurDescription = () => {
-    if (descriptionRef.current?.value.trim().length === 0) {
+    if (description.trim().length === 0) {
       setErrors((prevErrors) => ({
         ...prevErrors,
         isDescriptionError: true
@@ -140,10 +151,10 @@ const ArticleForm = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const enteredName = nameRef.current?.value.trim() as string
+    const enteredName = name.trim()
     const enteredPrice = parseFloat(price)
     const enteredAmount = parseInt(amount)
-    const enteredDescription = descriptionRef.current?.value.trim() as string
+    const enteredDescription = description.trim()
     const enteredImage = filePreview
 
     if (enteredName.length === 0 || enteredName.length > 20) {
@@ -177,7 +188,7 @@ const ArticleForm = () => {
       return
     }
 
-    const request: CreateArticle = {
+    const request: CreateArticle | EditArticle = {
       name: enteredName,
       price: enteredPrice,
       amount: enteredAmount,
@@ -186,22 +197,40 @@ const ArticleForm = () => {
     }
 
     const formData = new FormData()
-    formData.append('name', request.name)
+    formData.append('name', request.name as string)
     formData.append('price', request.price.toString())
     formData.append('amount', request.amount.toString())
     if (request.imageFile) {
       formData.append('imageFile', base64ToBlob(request.imageFile))
     }
 
-    createArticle(formData)
-      .then((response) => {
-        navigate('/article_detail', { state: { article: response.data } })
-      })
-      .catch((error) => {
-        if (isAxiosError(error)) {
-          //alert
-        }
-      })
+    if (props.article) {
+      modifyArticle(props.article.id, formData)
+        .then((response) => {
+          if (props.afterSucc === 'navigate') {
+            navigate('/article_detail', { state: { article: response.data } })
+          } else {
+            if (props.onChangeValue) {
+              props.onChangeValue(response.data)
+            }
+          }
+        })
+        .catch((error) => {
+          if (isAxiosError(error)) {
+            //alert
+          }
+        })
+    } else {
+      createArticle(formData)
+        .then((response) => {
+          navigate('/article_detail', { state: { article: response.data } })
+        })
+        .catch((error) => {
+          if (isAxiosError(error)) {
+            //alert
+          }
+        })
+    }
   }
   return (
     <div className={styles.article_div_form}>
@@ -236,7 +265,7 @@ const ArticleForm = () => {
               color='primary'
               style={{ marginTop: '16px', width: '100px' }}
             >
-              Create
+              {props.article ? 'Modify' : 'Create'}
             </Button>
           </div>
           <div className={styles.article_inputs}>
@@ -247,7 +276,7 @@ const ArticleForm = () => {
               variant='outlined'
               error={errors.isNameError}
               helperText={errors.isNameError && errorNameMessages}
-              inputRef={nameRef}
+              value={name}
               onBlur={handleBlurName}
               onFocus={() =>
                 setErrors((prevErrors) => ({
@@ -292,7 +321,7 @@ const ArticleForm = () => {
                   isAmountError: false
                 }))
               }
-              onKeyPress={handleKeyPress}
+              onKeyDown={handleKeyPress}
               inputProps={{ inputMode: 'numeric', min: '0', step: '1' }}
               style={{ marginBottom: '16px' }}
             />
@@ -305,7 +334,7 @@ const ArticleForm = () => {
               variant='outlined'
               error={errors.isDescriptionError}
               helperText={errors.isDescriptionError && 'Descriptor is required'}
-              inputRef={descriptionRef}
+              value={description}
               onBlur={handleBlurDescription}
               onFocus={() =>
                 setErrors((prevErrors) => ({
