@@ -20,3 +20,7 @@ export const verifySeller = async (request: UserVerify): Promise<AxiosResponse<s
 export const getMyProfile = async (): Promise<AxiosResponse<User>> => {
   return await axios.get<User>(`${url}/my-profile`)
 }
+
+export const editMyProfile = async (request: FormData): Promise<AxiosResponse<User>> => {
+  return await axios.patch<User>(`${url}`, request)
+}

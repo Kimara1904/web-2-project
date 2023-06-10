@@ -9,6 +9,7 @@ import styles from './ArticleForm.module.css'
 import { CreateArticle, EditArticle } from '../../models/ArticleModels'
 import { modifyArticle, createArticle } from '../../services/ArticleService'
 import { ArticleFormProperties } from '../../models/Properties'
+import { base64ToBlob } from '../../helpers/PictureHelper'
 
 const ArticleForm = (props: ArticleFormProperties) => {
   const [errorNameMessages, setErrorNameMessages] = useState('Name is required')
@@ -138,17 +139,6 @@ const ArticleForm = (props: ArticleFormProperties) => {
     fileInputRef.current?.click()
   }
 
-  const base64ToBlob = (base64Image: string): Blob => {
-    const decodedData = window.atob(base64Image)
-    const uIntArray = new Uint8Array(decodedData.length)
-
-    for (let i = 0; i < decodedData.length; ++i) {
-      uIntArray[i] = decodedData.charCodeAt(i)
-    }
-
-    return new Blob([uIntArray], { type: 'image/png' })
-  }
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const enteredName = name.trim()
@@ -234,7 +224,7 @@ const ArticleForm = (props: ArticleFormProperties) => {
   }
   return (
     <div className={styles.article_div_form}>
-      <Typography variant='h4'>Add new article</Typography>
+      {props.article && <Typography variant='h4'>Add new article</Typography>}
       <form onSubmit={handleSubmit}>
         <div className={styles.article_form}>
           <div className={styles.article_file}>

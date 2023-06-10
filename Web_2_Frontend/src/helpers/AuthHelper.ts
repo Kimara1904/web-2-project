@@ -8,6 +8,10 @@ export const isAdmin = () => {
   return sessionStorage.getItem('role') === UserRole.Admin
 }
 
+export const isSeller = () => {
+  return sessionStorage.getItem('role') === UserRole.Seller
+}
+
 export const isSellerVerified = () => {
   return (
     sessionStorage.getItem('role') === UserRole.Seller &&

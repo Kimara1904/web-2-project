@@ -7,6 +7,7 @@ import { AxiosError, isAxiosError } from 'axios'
 import { OrderItemProperties } from '../../models/Properties'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
 import { cancelOrder } from '../../services/OrderService'
+import { GetTimeUntilDelivery, isInDelivery } from '../../helpers/DateTimeHelper'
 
 const OrderItem = (props: OrderItemProperties) => {
   const [order, setOrder] = useState(props.order)
@@ -22,19 +23,6 @@ const OrderItem = (props: OrderItemProperties) => {
       clearInterval(intervalId)
     }
   }, [])
-  const isInDelivery = (date: Date) => {
-    return currentTime < date
-  }
-
-  const GetTimeUntilDelivery = (date: Date) => {
-    const timeDiff = date.getTime() - currentTime.getTime()
-    const hours = Math.floor(timeDiff / (1000 * 60 * 60))
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60))
-    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000)
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')}`
-  }
 
   const handleRowClick = () => {
     navigate('/order_detail', { state: { order: order } })
@@ -79,14 +67,14 @@ const OrderItem = (props: OrderItemProperties) => {
       <TableCell align='right'>
         {order.isCancled
           ? 'Canceled'
-          : isInDelivery(new Date(order.deliveryTime))
+          : isInDelivery(new Date(order.deliveryTime), currentTime)
           ? isAdmin()
             ? 'In Delivery'
-            : GetTimeUntilDelivery(new Date(order.deliveryTime))
+            : GetTimeUntilDelivery(new Date(order.deliveryTime), currentTime)
           : 'Delivered'}
       </TableCell>
       {isCustomer() &&
-        (!order.isCancled && isInDelivery(new Date(order.deliveryTime)) ? (
+        (!order.isCancled && isInDelivery(new Date(order.deliveryTime), currentTime) ? (
           <TableCell align='right'>
             <Button variant='contained' color='primary' onClick={handleCancelOrder}>
               Cancel

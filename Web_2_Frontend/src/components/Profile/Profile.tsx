@@ -7,6 +7,7 @@ import { User } from '../../models/UserModels'
 import profileDefault from '../../images/default_user_picture.jpg'
 import styles from './Profile.module.css'
 import { getMyProfile } from '../../services/UserService'
+import { isSeller } from '../../helpers/AuthHelper'
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState<User>()
@@ -77,6 +78,14 @@ const Profile = () => {
                 </TableCell>
                 <TableCell align='right'>{userInfo?.address}</TableCell>
               </TableRow>
+              {isSeller() && (
+                <TableRow>
+                  <TableCell component='th' scope='row'>
+                    <Typography variant='h6'>Verify status:</Typography>
+                  </TableCell>
+                  <TableCell align='right'>{sessionStorage.getItem('verified')}</TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

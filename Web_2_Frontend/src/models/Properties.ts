@@ -40,3 +40,8 @@ export interface ArticleFormProperties {
   onChangeValue?: (article: Article) => void
   afterSucc?: 'navigate' | 'changeValue'
 }
+
+export interface ProfileFormProperties {
+  user: User
+  onChangeValue: (user: User) => void
+}

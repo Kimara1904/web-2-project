@@ -12,3 +12,15 @@ export interface UserVerify {
   username: string
   verified: string
 }
+
+export interface EditProfile {
+  username?: string
+  email?: string
+  oldPassword?: string
+  newPassword?: string
+  firstName?: string
+  lastName?: string
+  birthDate?: string
+  address?: string
+  fileImage?: string
+}

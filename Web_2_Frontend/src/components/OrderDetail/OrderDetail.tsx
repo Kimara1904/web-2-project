@@ -16,6 +16,7 @@ import { Order } from '../../models/OrderModels'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
 import styles from './OrderDetail.module.css'
 import { cancelOrder } from '../../services/OrderService'
+import { GetTimeUntilDelivery, isInDelivery } from '../../helpers/DateTimeHelper'
 
 const OrderDetail = () => {
   const [order, setOrder] = useState<Order>()
@@ -41,20 +42,6 @@ const OrderDetail = () => {
       clearInterval(intervalId)
     }
   }, [])
-
-  const isInDelivery = (date: Date) => {
-    return currentTime < date
-  }
-
-  const GetTimeUntilDelivery = (date: Date) => {
-    const timeDiff = date.getTime() - currentTime.getTime()
-    const hours = Math.floor(timeDiff / (1000 * 60 * 60))
-    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60))
-    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000)
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
-      .toString()
-      .padStart(2, '0')}`
-  }
 
   const handleCancelOrder = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation()
@@ -112,10 +99,10 @@ const OrderDetail = () => {
                   <TableCell align='right'>
                     {order?.isCancled
                       ? 'Canceled'
-                      : isInDelivery(new Date(order?.deliveryTime as string))
+                      : isInDelivery(new Date(order?.deliveryTime as string), currentTime)
                       ? isAdmin()
                         ? 'In Delivery'
-                        : GetTimeUntilDelivery(new Date(order?.deliveryTime as string))
+                        : GetTimeUntilDelivery(new Date(order?.deliveryTime as string), currentTime)
                       : 'Delivered'}
                   </TableCell>
                 </TableRow>
@@ -159,11 +146,13 @@ const OrderDetail = () => {
             </Table>
           </TableContainer>
         </div>
-        {isCustomer() && !order?.isCancled && (
-          <Button variant='contained' color='primary' onClick={handleCancelOrder}>
-            Cancel
-          </Button>
-        )}
+        {isCustomer() &&
+          !order?.isCancled &&
+          isInDelivery(new Date(order?.deliveryTime as string), currentTime) && (
+            <Button variant='contained' color='primary' onClick={handleCancelOrder}>
+              Cancel
+            </Button>
+          )}
       </div>
     </div>
   )
