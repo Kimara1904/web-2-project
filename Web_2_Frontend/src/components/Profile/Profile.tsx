@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react'
 
-import { Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material'
+import {
+  Button,
+  Modal,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography
+} from '@mui/material'
 import { isAxiosError } from 'axios'
 
 import { User } from '../../models/UserModels'
@@ -8,9 +17,11 @@ import profileDefault from '../../images/default_user_picture.jpg'
 import styles from './Profile.module.css'
 import { getMyProfile } from '../../services/UserService'
 import { isSeller } from '../../helpers/AuthHelper'
+import ProfileForm from '../ProfileForm/ProfileForm'
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState<User>()
+  const [isShownEditForm, setIsShownEditForm] = useState(false)
 
   useEffect(() => {
     getProfileInfo()
@@ -26,6 +37,19 @@ const Profile = () => {
           //alert
         }
       })
+  }
+
+  const handleClickEdit = () => {
+    setIsShownEditForm(true)
+  }
+
+  const handleCloseForm = () => {
+    setIsShownEditForm(false)
+  }
+
+  const handleChangeArticleValue = (user: User) => {
+    setUserInfo(user)
+    setIsShownEditForm(false)
   }
 
   const formatDate = (dateString: string): string => {
@@ -89,7 +113,29 @@ const Profile = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Button
+          variant='contained'
+          onClick={handleClickEdit}
+          style={{ marginTop: '16px', width: '100px' }}
+        >
+          Edit
+        </Button>
       </div>
+      <Modal
+        open={isShownEditForm}
+        onClose={handleCloseForm}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <div className={styles.profile_modal}>
+          <ProfileForm user={userInfo as User} onChangeValue={handleChangeArticleValue} />
+        </div>
+      </Modal>
     </div>
   )
 }

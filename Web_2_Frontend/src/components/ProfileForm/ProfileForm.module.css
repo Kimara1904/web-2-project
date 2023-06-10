@@ -2,16 +2,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    margin-top: 50px;
+    margin-top: 15px;
     margin-bottom: 50px;
+    padding: 20px; 
 }
 
 .profile_form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-items: space-between;
+    justify-content: space-between;
 }
 
 .text_field {
@@ -30,4 +30,21 @@
     right: 0;
     z-index: 9999;
     width: auto;
+}
+
+.profile_input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile_img_button img {
+    width: 250px;
+    height: 250px;
+}
+
+.profile_password {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

@@ -28,7 +28,7 @@ namespace Web_2_Online_Shop.Services
             var users = await _repository._userRepository.GetAllAsync();
             var user = users.Where(u => u.Id == id).FirstOrDefault() ?? throw new NotFoundException("User with this token doesn't exist.");
 
-            if (newUserInfos.Email != null)
+            if (newUserInfos.Email != null && newUserInfos.Email != user.Email)
             {
                 var emailUser = users.Where(u => u.Email == newUserInfos.Email).FirstOrDefault();
                 if (emailUser != null)
@@ -37,7 +37,7 @@ namespace Web_2_Online_Shop.Services
                 }
             }
 
-            if (newUserInfos.Username != null)
+            if (newUserInfos.Username != null && newUserInfos.Username != user.Username)
             {
                 var usernameUser = users.Where(u => u.Username == newUserInfos.Username).FirstOrDefault();
                 if (usernameUser != null)

@@ -220,7 +220,7 @@ const ProfileForm = (props: ProfileFormProperties) => {
 
     const request: EditProfile = {
       username: userInfo.username,
-      email: userInfo.lastName,
+      email: userInfo.email,
       oldPassword: passwords.old,
       newPassword: passwords.new,
       firstName: userInfo.firstName,
@@ -266,8 +266,8 @@ const ProfileForm = (props: ProfileFormProperties) => {
           {alert.message}
         </Alert>
       )} */}
-      <form className={styles.register_form} onSubmit={handleSubmit}>
-        <div className={styles.article_file}>
+      <form className={styles.profile_form} onSubmit={handleSubmit}>
+        <div className={styles.profile_img_button}>
           <input
             ref={fileInputRef}
             type='file'
@@ -289,16 +289,8 @@ const ProfileForm = (props: ProfileFormProperties) => {
               backgroundSize: 'cover'
             }}
           />
-          <Button
-            type='submit'
-            variant='contained'
-            color='primary'
-            style={{ marginTop: '16px', width: '100px' }}
-          >
-            Modify
-          </Button>
         </div>
-        <div>
+        <div className={styles.profile_input}>
           <TextField
             id='ProfileUsername'
             name='username'
@@ -336,11 +328,16 @@ const ProfileForm = (props: ProfileFormProperties) => {
             className={styles.text_field}
             style={{ marginBottom: '16px' }}
           />
-          <Button variant='contained' color='primary' onClick={handleClickChangePassword}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={handleClickChangePassword}
+            style={{ marginBottom: '16px', width: '100px' }}
+          >
             {isPasswordChanging ? 'Cancel change password' : 'Change password'}
           </Button>
           {isPasswordChanging && (
-            <div>
+            <div className={styles.profile_password}>
               <TextField
                 id='ProfileOldPassword'
                 name='old'
@@ -440,7 +437,7 @@ const ProfileForm = (props: ProfileFormProperties) => {
             variant='outlined'
             error={errors.isBirthDateError}
             helperText={errors.isBirthDateError && 'You must be at least 18 years old'}
-            value={userInfo.birthDate}
+            value={userInfo.birthDate.split('T')[0]}
             onBlur={handleBlurBirthDate}
             onChange={handleChange}
             onFocus={() =>
@@ -472,7 +469,12 @@ const ProfileForm = (props: ProfileFormProperties) => {
             className={styles.text_field}
             style={{ marginBottom: '16px' }}
           />
-          <Button type='submit' variant='contained' color='primary'>
+          <Button
+            type='submit'
+            variant='contained'
+            color='primary'
+            style={{ marginTop: '16px', width: '100px' }}
+          >
             Edit
           </Button>
         </div>

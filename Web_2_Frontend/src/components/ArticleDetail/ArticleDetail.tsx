@@ -135,6 +135,11 @@ const ArticleDetail = () => {
         onClose={handleCloseForm}
         aria-labelledby='modal-modal-title'
         aria-describedby='modal-modal-description'
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
       >
         <div>
           <ArticleForm
