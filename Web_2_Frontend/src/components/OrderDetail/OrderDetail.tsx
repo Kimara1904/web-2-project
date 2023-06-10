@@ -1,11 +1,21 @@
 import { useEffect, useState } from 'react'
 
-import { Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material'
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography
+} from '@mui/material'
 import { Link, useLocation } from 'react-router-dom'
+import { AxiosError, isAxiosError } from 'axios'
 
 import { Order } from '../../models/OrderModels'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
 import styles from './OrderDetail.module.css'
+import { cancelOrder } from '../../services/OrderService'
 
 const OrderDetail = () => {
   const [order, setOrder] = useState<Order>()
@@ -13,7 +23,13 @@ const OrderDetail = () => {
   const location = useLocation().state as { order: Order }
 
   useEffect(() => {
-    setOrder(location.order)
+    const storedOrderData = sessionStorage.getItem('order')
+    if (storedOrderData) {
+      const parsedOrder = JSON.parse(storedOrderData) as Order
+      setOrder(parsedOrder)
+    } else if (location.order) {
+      setOrder(location.order)
+    }
   }, [location.order])
 
   useEffect(() => {
@@ -40,10 +56,29 @@ const OrderDetail = () => {
       .padStart(2, '0')}`
   }
 
+  const handleCancelOrder = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation()
+    cancelOrder(order?.id as number)
+      .then((response) => {
+        setOrder(response.data)
+        sessionStorage.setItem('order', JSON.stringify(response.data))
+      })
+      .catch((error: AxiosError) => {
+        if (isAxiosError(error)) {
+          //alert
+        }
+      })
+  }
+  const handleDeleteLocalOrder = () => {
+    sessionStorage.removeItem('order')
+  }
+
   return (
     <div>
       <div className={styles.order_detail_link_back}>
-        <Link to='/dashboard'>Back to Dashboard</Link>
+        <Link to='/dashboard' onClick={handleDeleteLocalOrder}>
+          Back to Dashboard
+        </Link>
       </div>
       <div className={styles.order_detail_div}>
         <div className={styles.order_detail}>
@@ -124,6 +159,11 @@ const OrderDetail = () => {
             </Table>
           </TableContainer>
         </div>
+        {isCustomer() && !order?.isCancled && (
+          <Button variant='contained' color='primary' onClick={handleCancelOrder}>
+            Cancel
+          </Button>
+        )}
       </div>
     </div>
   )

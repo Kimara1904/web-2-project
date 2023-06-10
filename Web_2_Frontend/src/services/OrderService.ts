@@ -24,3 +24,7 @@ export const createOrder = async (request: CreateOrder): Promise<AxiosResponse<O
 export const getMyOrders = async (): Promise<AxiosResponse<Order[]>> => {
   return await axios.get<Order[]>(`${url}/customers-orders`)
 }
+
+export const cancelOrder = async (id: number): Promise<AxiosResponse<Order>> => {
+  return await axios.put<Order>(`${url}/${id}`)
+}

@@ -2,11 +2,14 @@ import { useEffect, useState } from 'react'
 
 import { Button, TableCell, TableRow } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { AxiosError, isAxiosError } from 'axios'
 
 import { OrderItemProperties } from '../../models/Properties'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
+import { cancelOrder } from '../../services/OrderService'
 
 const OrderItem = (props: OrderItemProperties) => {
+  const [order, setOrder] = useState(props.order)
   const [currentTime, setCurrentTime] = useState(new Date())
   const navigate = useNavigate()
 
@@ -34,7 +37,20 @@ const OrderItem = (props: OrderItemProperties) => {
   }
 
   const handleRowClick = () => {
-    navigate('/order_detail', { state: { order: props.order } })
+    navigate('/order_detail', { state: { order: order } })
+  }
+
+  const handleCancelOrder = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation()
+    cancelOrder(order.id)
+      .then((response) => {
+        setOrder(response.data)
+      })
+      .catch((error: AxiosError) => {
+        if (isAxiosError(error)) {
+          //alert
+        }
+      })
   }
 
   return (
@@ -43,37 +59,37 @@ const OrderItem = (props: OrderItemProperties) => {
       onClick={handleRowClick}
     >
       <TableCell component='th' scope='row'>
-        {props.order.id}
+        {order.id}
       </TableCell>
-      {!isCustomer() && <TableCell align='right'>{props.order.buyerUsername}</TableCell>}
+      {!isCustomer() && <TableCell align='right'>{order.buyerUsername}</TableCell>}
       <TableCell align='center'>
-        {props.order.items[0].article.name +
+        {order.items[0].article.name +
           ' x ' +
-          props.order.items[0].amount.toString() +
-          (props.order.items[1]
+          order.items[0].amount.toString() +
+          (order.items[1]
             ? ', ' +
-              props.order.items[1].article.name +
+              order.items[1].article.name +
               ' x ' +
-              props.order.items[1].amount.toString() +
-              (props.order.items[2] ? '...' : '')
+              order.items[1].amount.toString() +
+              (order.items[2] ? '...' : '')
             : '')}
       </TableCell>
-      <TableCell align='center'>{props.order.itemPrice + props.order.deliveryPrice}</TableCell>
-      <TableCell align='right'>{props.order.address}</TableCell>
+      <TableCell align='center'>{order.itemPrice + order.deliveryPrice}</TableCell>
+      <TableCell align='right'>{order.address}</TableCell>
       <TableCell align='right'>
-        {props.order.isCancled
+        {order.isCancled
           ? 'Canceled'
-          : isInDelivery(new Date(props.order.deliveryTime))
+          : isInDelivery(new Date(order.deliveryTime))
           ? isAdmin()
             ? 'In Delivery'
-            : GetTimeUntilDelivery(new Date(props.order.deliveryTime))
+            : GetTimeUntilDelivery(new Date(order.deliveryTime))
           : 'Delivered'}
       </TableCell>
       {isCustomer() &&
-        (!props.order.isCancled && isInDelivery(new Date(props.order.deliveryTime)) ? (
+        (!order.isCancled && isInDelivery(new Date(order.deliveryTime)) ? (
           <TableCell align='right'>
-            <Button variant='contained' color='primary'>
-              Cancle
+            <Button variant='contained' color='primary' onClick={handleCancelOrder}>
+              Cancel
             </Button>
           </TableCell>
         ) : (
