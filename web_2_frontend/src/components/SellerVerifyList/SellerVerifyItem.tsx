@@ -5,6 +5,7 @@ import { SellerVerifyItemProperties } from '../../models/Properties'
 import DefaultUserImage from '../../images/default_user_picture.jpg'
 import { verifySeller } from '../../services/UserService'
 import styles from './SellerVerifyItem.module.css'
+import { ErrorData } from '../../models/ErrorModels'
 
 const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
   const handleVerify = (verified: string) => {
@@ -14,9 +15,9 @@ const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
           props.onVerify()
         }
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          //izbaciti alert
+          props.onError(error.response?.data.Exception as string)
         }
       })
   }

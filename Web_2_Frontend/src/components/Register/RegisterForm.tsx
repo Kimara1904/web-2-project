@@ -14,6 +14,7 @@ import {
 import { AxiosError, isAxiosError } from 'axios'
 
 import styles from './RegisterForm.module.css'
+import alertStyle from '../../App.module.css'
 import { RegisterRequest } from '../../models/AuthenticationModels'
 import { register } from '../../services/AuthenticationService'
 import { ErrorData } from '../../models/ErrorModels'
@@ -320,7 +321,7 @@ const RegisterForm = () => {
     <div className={styles.div_register_form}>
       {alert.message !== '' && (
         <Alert
-          className={styles.alert_register}
+          className={alertStyle.alert}
           severity={alert.severity as AlertColor}
           onClose={() => setAlert({ message: '', severity: 'success' })}
         >

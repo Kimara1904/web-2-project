@@ -1,7 +1,8 @@
 import { createRef, useContext, useEffect, useState } from 'react'
 
-import { Button, TextField, Typography } from '@mui/material'
+import { Alert, AlertTitle, Button, TextField, Typography } from '@mui/material'
 import { AxiosError, isAxiosError } from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 import PickedItem from './PickedItem'
 import CartContext from '../../store/cart-context'
@@ -9,14 +10,23 @@ import { CreateItem } from '../../models/OrderItemModels'
 import { CreateOrder } from '../../models/OrderModels'
 import { createOrder } from '../../services/OrderService'
 import styles from './OrderForm.module.css'
+import alertStyle from '../../App.module.css'
+import { ErrorData } from '../../models/ErrorModels'
 
 const OrderForm = () => {
   const [isAddressError, setIsAddressError] = useState(false)
   const [isListItemEmpty, setIsListItemEmpty] = useState(false)
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
+
   const addressRef = createRef<HTMLInputElement>()
   const commentRef = createRef<HTMLInputElement>()
 
   const cartContext = useContext(CartContext)
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (cartContext.items.length !== 0) {
@@ -62,16 +72,34 @@ const OrderForm = () => {
 
     createOrder(request)
       .then((response) => {
-        //prosledi u OrderDetail
+        navigate('/order_detail', { state: { order: response.data } })
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          //rokni neki alert
+          setAlertError({
+            isError: true,
+            message: error.response?.data.Exception as string
+          })
         }
       })
   }
   return (
     <div>
+      {alertError.isError && (
+        <Alert
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
+        >
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
+        </Alert>
+      )}
       <form onSubmit={handleSubmit} className={styles.order_form}>
         <div>
           {cartContext.items.map((item) => {

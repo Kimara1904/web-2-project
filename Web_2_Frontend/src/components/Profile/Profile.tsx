@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
 import {
+  Alert,
+  AlertTitle,
   Button,
   Modal,
   Table,
@@ -10,18 +12,24 @@ import {
   TableRow,
   Typography
 } from '@mui/material'
-import { isAxiosError } from 'axios'
+import { AxiosError, isAxiosError } from 'axios'
 
 import { User } from '../../models/UserModels'
 import profileDefault from '../../images/default_user_picture.jpg'
 import styles from './Profile.module.css'
+import alertStyle from '../../App.module.css'
 import { getMyProfile } from '../../services/UserService'
 import { isSeller } from '../../helpers/AuthHelper'
 import ProfileForm from '../ProfileForm/ProfileForm'
+import { ErrorData } from '../../models/ErrorModels'
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState<User>()
   const [isShownEditForm, setIsShownEditForm] = useState(false)
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
 
   useEffect(() => {
     getProfileInfo()
@@ -32,9 +40,12 @@ const Profile = () => {
       .then((response) => {
         setUserInfo(response.data)
       })
-      .catch((error) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          //alert
+          setAlertError({
+            isError: true,
+            message: error.response?.data.Exception as string
+          })
         }
       })
   }
@@ -62,6 +73,21 @@ const Profile = () => {
 
   return (
     <div className={styles.profile_detail}>
+      {alertError.isError && (
+        <Alert
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
+        >
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
+        </Alert>
+      )}
       <img
         src={userInfo?.image ? `data:image/png;base64,${userInfo?.image}` : profileDefault}
         alt='article'

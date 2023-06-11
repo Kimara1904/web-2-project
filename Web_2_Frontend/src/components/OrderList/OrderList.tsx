@@ -1,6 +1,8 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 import {
+  Alert,
+  AlertTitle,
   Paper,
   Table,
   TableBody,
@@ -14,8 +16,21 @@ import {
 import { OrderListProperties } from '../../models/Properties'
 import { isCustomer } from '../../helpers/AuthHelper'
 import OrderItem from './OrderItem'
+import alertStyle from '../../App.module.css'
 
 const OrderList = (prop: OrderListProperties) => {
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
+
+  const handleError = (message: string) => {
+    setAlertError({
+      isError: true,
+      message: message
+    })
+  }
+
   let content: ReactNode = null
   if (prop.orders.length === 0) {
     content = (
@@ -33,13 +48,28 @@ const OrderList = (prop: OrderListProperties) => {
     content = (
       <TableBody>
         {prop.orders.map((order) => (
-          <OrderItem key={order.id} order={order} />
+          <OrderItem key={order.id} order={order} onError={handleError} />
         ))}
       </TableBody>
     )
   }
   return (
     <>
+      {alertError.isError && (
+        <Alert
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
+        >
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
+        </Alert>
+      )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size='small' aria-label='a dense table'>
           <TableHead>

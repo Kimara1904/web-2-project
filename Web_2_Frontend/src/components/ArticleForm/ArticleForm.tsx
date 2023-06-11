@@ -1,15 +1,17 @@
 import { ChangeEvent, createRef, useEffect, useState } from 'react'
 
-import { Button, TextField, Typography } from '@mui/material'
+import { Alert, AlertTitle, Button, TextField, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { isAxiosError } from 'axios'
+import { AxiosError, isAxiosError } from 'axios'
 
 import articleDefault from '../../images/default_article_pictures.png'
 import styles from './ArticleForm.module.css'
+import alertStyle from '../../App.module.css'
 import { CreateArticle, EditArticle } from '../../models/ArticleModels'
 import { modifyArticle, createArticle } from '../../services/ArticleService'
 import { ArticleFormProperties } from '../../models/Properties'
 import { base64ToBlob } from '../../helpers/PictureHelper'
+import { ErrorData } from '../../models/ErrorModels'
 
 const ArticleForm = (props: ArticleFormProperties) => {
   const [errorNameMessages, setErrorNameMessages] = useState('Name is required')
@@ -24,6 +26,10 @@ const ArticleForm = (props: ArticleFormProperties) => {
   const [amount, setAmount] = useState('0')
   const [description, setDescription] = useState('')
   const [filePreview, setFilePreview] = useState<string>()
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
 
   const fileInputRef = createRef<HTMLInputElement>()
 
@@ -205,9 +211,12 @@ const ArticleForm = (props: ArticleFormProperties) => {
             }
           }
         })
-        .catch((error) => {
+        .catch((error: AxiosError<ErrorData>) => {
           if (isAxiosError(error)) {
-            //alert
+            setAlertError({
+              isError: true,
+              message: error.response?.data.Exception as string
+            })
           }
         })
     } else {
@@ -215,15 +224,33 @@ const ArticleForm = (props: ArticleFormProperties) => {
         .then((response) => {
           navigate('/article_detail', { state: { article: response.data } })
         })
-        .catch((error) => {
+        .catch((error: AxiosError<ErrorData>) => {
           if (isAxiosError(error)) {
-            //alert
+            setAlertError({
+              isError: true,
+              message: error.response?.data.Exception as string
+            })
           }
         })
     }
   }
   return (
     <div className={styles.article_div_form}>
+      {alertError.isError && (
+        <Alert
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
+        >
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
+        </Alert>
+      )}
       {props.article && <Typography variant='h4'>Add new article</Typography>}
       <form onSubmit={handleSubmit}>
         <div className={styles.article_form}>

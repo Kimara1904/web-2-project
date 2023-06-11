@@ -1,14 +1,16 @@
 import { ChangeEvent, createRef, useState } from 'react'
 
-import { Button, TextField } from '@mui/material'
+import { Alert, AlertTitle, Button, TextField } from '@mui/material'
 import { AxiosError, isAxiosError } from 'axios'
 
 import { ProfileFormProperties } from '../../models/Properties'
 import { EditProfile, User } from '../../models/UserModels'
 import styles from './ProfileForm.module.css'
+import alertStyle from '../../App.module.css'
 import userDefault from '../../images/default_user_picture.jpg'
 import { editMyProfile } from '../../services/UserService'
 import { base64ToBlob } from '../../helpers/PictureHelper'
+import { ErrorData } from '../../models/ErrorModels'
 
 const ProfileForm = (props: ProfileFormProperties) => {
   const [userInfo, setUserInfo] = useState<User>(props.user)
@@ -26,6 +28,10 @@ const ProfileForm = (props: ProfileFormProperties) => {
     isLastNameError: false,
     isBirthDateError: false,
     isAddressError: false
+  })
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
   })
 
   const fileInputRef = createRef<HTMLInputElement>()
@@ -245,27 +251,33 @@ const ProfileForm = (props: ProfileFormProperties) => {
       .then((response) => {
         props.onChangeValue(response.data)
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          //alert
+          setAlertError({
+            isError: true,
+            message: error.response?.data.Exception as string
+          })
         }
       })
   }
 
   return (
     <div className={styles.div_profile_form}>
-      {/* {alert.message !== '' && (
+      {alertError.isError && (
         <Alert
-          className={styles.alert_profile}
-          severity={alert.severity as AlertColor}
-          onClose={() => setAlert({ message: '', severity: 'success' })}
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
         >
-          <AlertTitle>
-            {alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)}
-          </AlertTitle>
-          {alert.message}
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
         </Alert>
-      )} */}
+      )}
       <form className={styles.profile_form} onSubmit={handleSubmit}>
         <div className={styles.profile_img_button}>
           <input

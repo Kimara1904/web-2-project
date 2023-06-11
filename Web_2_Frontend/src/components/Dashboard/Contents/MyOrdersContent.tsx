@@ -4,36 +4,48 @@ import { Alert, AlertTitle } from '@mui/material'
 import { AxiosError, isAxiosError } from 'axios'
 
 import { Order } from '../../../models/OrderModels'
-import styles from './AllOrderContent.module.css'
+import alertStyle from '../../../App.module.css'
 import OrderList from '../../OrderList/OrderList'
 import { getMyOrders } from '../../../services/OrderService'
+import { ErrorData } from '../../../models/ErrorModels'
 
 const MyOrdersContent = () => {
   const [orderList, setOrderList] = useState<Order[]>([])
-  const [isError, setIsError] = useState(false)
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
 
   useEffect(() => {
     getMyOrders()
       .then((response) => {
         setOrderList(response.data)
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          setIsError(true)
+          setAlertError({
+            isError: true,
+            message: error.response?.data.Exception as string
+          })
         }
       })
   }, [])
 
   return (
     <>
-      {isError && (
+      {alertError.isError && (
         <Alert
-          className={styles.alert_all_orders}
+          className={alertStyle.alert}
           severity='error'
-          onClose={() => setIsError(false)}
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
         >
           <AlertTitle>Error</AlertTitle>
-          Internal Server Error: 500
+          {alertError.message}
         </Alert>
       )}
       <OrderList orders={orderList} />

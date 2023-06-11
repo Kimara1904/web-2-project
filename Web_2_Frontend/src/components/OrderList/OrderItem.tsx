@@ -8,6 +8,7 @@ import { OrderItemProperties } from '../../models/Properties'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
 import { cancelOrder } from '../../services/OrderService'
 import { GetTimeUntilDelivery, isInDelivery } from '../../helpers/DateTimeHelper'
+import { ErrorData } from '../../models/ErrorModels'
 
 const OrderItem = (props: OrderItemProperties) => {
   const [order, setOrder] = useState(props.order)
@@ -34,9 +35,9 @@ const OrderItem = (props: OrderItemProperties) => {
       .then((response) => {
         setOrder(response.data)
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          //alert
+          props.onError(error.response?.data.Exception as string)
         }
       })
   }

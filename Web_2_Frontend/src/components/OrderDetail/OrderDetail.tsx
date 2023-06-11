@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 
 import {
+  Alert,
+  AlertTitle,
   Button,
   Table,
   TableBody,
@@ -15,12 +17,18 @@ import { AxiosError, isAxiosError } from 'axios'
 import { Order } from '../../models/OrderModels'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
 import styles from './OrderDetail.module.css'
+import alertStyle from '../../App.module.css'
 import { cancelOrder } from '../../services/OrderService'
 import { GetTimeUntilDelivery, isInDelivery } from '../../helpers/DateTimeHelper'
+import { ErrorData } from '../../models/ErrorModels'
 
 const OrderDetail = () => {
   const [order, setOrder] = useState<Order>()
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
   const location = useLocation().state as { order: Order }
 
   useEffect(() => {
@@ -50,9 +58,12 @@ const OrderDetail = () => {
         setOrder(response.data)
         sessionStorage.setItem('order', JSON.stringify(response.data))
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          //alert
+          setAlertError({
+            isError: true,
+            message: error.response?.data.Exception as string
+          })
         }
       })
   }
@@ -62,6 +73,21 @@ const OrderDetail = () => {
 
   return (
     <div>
+      {alertError.isError && (
+        <Alert
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
+        >
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
+        </Alert>
+      )}
       <div className={styles.order_detail_link_back}>
         <Link to='/dashboard' onClick={handleDeleteLocalOrder}>
           Back to Dashboard

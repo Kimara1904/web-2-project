@@ -9,6 +9,7 @@ export interface OrderListProperties {
 
 export interface OrderItemProperties {
   order: Order
+  onError: (message: string) => void
 }
 
 export interface SellerVerifyListProperties {
@@ -21,6 +22,7 @@ export interface SellerVerifyItemProperties {
   seller: User
   verified: boolean
   onVerify?: () => void
+  onError: (message: string) => void
 }
 
 export interface ArticleListProperties {

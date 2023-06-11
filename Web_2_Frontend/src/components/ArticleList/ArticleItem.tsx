@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { IconButton, Modal, Typography } from '@mui/material'
+import { Alert, AlertTitle, IconButton, Modal, Typography } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import EditIcon from '@mui/icons-material/Edit'
@@ -10,11 +10,13 @@ import { AxiosError, isAxiosError } from 'axios'
 import { ArticleItemProperties } from '../../models/Properties'
 import articleDefault from '../../images/default_article_pictures.png'
 import styles from './ArticleList.module.css'
+import alertStyle from '../../App.module.css'
 import { isCustomer, isSellerVerified } from '../../helpers/AuthHelper'
 import CartContext from '../../store/cart-context'
 import { PickedItemInfo } from '../../models/OrderItemModels'
 import ArticleForm from '../ArticleForm/ArticleForm'
 import { deleteArticle } from '../../services/ArticleService'
+import { ErrorData } from '../../models/ErrorModels'
 
 const ArticleItem = (prop: ArticleItemProperties) => {
   const cartContext = useContext(CartContext)
@@ -22,6 +24,10 @@ const ArticleItem = (prop: ArticleItemProperties) => {
     cartContext.items.some((item) => item.articleId === prop.article.id)
   )
   const [isShownEditForm, setIsShownEditForm] = useState(false)
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
 
   const navigate = useNavigate()
 
@@ -66,18 +72,35 @@ const ArticleItem = (prop: ArticleItemProperties) => {
     event.stopPropagation()
     deleteArticle(prop.article?.id)
       .then(() => {
-        //uspesan alert
         window.location.reload()
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          //neuspesan alert
+          setAlertError({
+            isError: true,
+            message: error.response?.data.Exception as string
+          })
         }
       })
   }
 
   return (
     <div>
+      {alertError.isError && (
+        <Alert
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
+        >
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
+        </Alert>
+      )}
       <div
         className={styles.article_item}
         onClick={handleClickArticle}

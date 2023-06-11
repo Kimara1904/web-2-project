@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
+  Alert,
+  AlertTitle,
   Button,
   Modal,
   Table,
@@ -16,12 +18,18 @@ import { AxiosError, isAxiosError } from 'axios'
 import { Article } from '../../models/ArticleModels'
 import articleDefault from '../../images/default_article_pictures.png'
 import styles from './ArticleDetail.module.css'
+import alertStyle from '../../App.module.css'
 import ArticleForm from '../ArticleForm/ArticleForm'
 import { deleteArticle } from '../../services/ArticleService'
+import { ErrorData } from '../../models/ErrorModels'
 
 const ArticleDetail = () => {
   const [article, setArticle] = useState<Article>()
   const [isShownEditForm, setIsShownEditForm] = useState(false)
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
   const location = useLocation().state as { article: Article }
 
   const navigate = useNavigate()
@@ -57,18 +65,35 @@ const ArticleDetail = () => {
   const handleDeleteArticle = () => {
     deleteArticle(article?.id as number)
       .then(() => {
-        //uspesan alert
         navigate('/dashboard')
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
-          //neuspesan alert
+          setAlertError({
+            isError: true,
+            message: error.response?.data.Exception as string
+          })
         }
       })
   }
 
   return (
     <div>
+      {alertError.isError && (
+        <Alert
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
+        >
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
+        </Alert>
+      )}
       <div className={styles.article_detail_link_back}>
         <Link to='/dashboard' onClick={handleDeleteLocalArticle}>
           Back to Dashboard

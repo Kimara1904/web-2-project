@@ -1,4 +1,8 @@
+import { useState } from 'react'
+
 import {
+  Alert,
+  AlertTitle,
   Paper,
   Table,
   TableBody,
@@ -11,10 +15,38 @@ import {
 
 import { SellerVerifyListProperties } from '../../models/Properties'
 import SellerVerifyItem from './SellerVerifyItem'
+import alertStyle from '../../App.module.css'
 
 const SellerVerifyList = (props: SellerVerifyListProperties) => {
+  const [alertError, setAlertError] = useState({
+    isError: false,
+    message: ''
+  })
+
+  const handleError = (message: string) => {
+    setAlertError({
+      isError: true,
+      message: message
+    })
+  }
+
   return (
     <>
+      {alertError.isError && (
+        <Alert
+          className={alertStyle.alert}
+          severity='error'
+          onClose={() =>
+            setAlertError((pervState) => ({
+              ...pervState,
+              isError: false
+            }))
+          }
+        >
+          <AlertTitle>Error</AlertTitle>
+          {alertError.message}
+        </Alert>
+      )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size='small' aria-label='a dense table'>
           <TableHead>
@@ -37,6 +69,7 @@ const SellerVerifyList = (props: SellerVerifyListProperties) => {
                     seller={seller}
                     verified={props.verified}
                     onVerify={props.onVerify}
+                    onError={handleError}
                   />
                 )
               })
