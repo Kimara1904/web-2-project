@@ -6,7 +6,6 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
   TableCell,
   TableRow
 } from '@mui/material'
@@ -17,7 +16,7 @@ import ReactDOM from 'react-dom'
 import { OrderItemProperties } from '../../models/Properties'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
 import { cancelOrder } from '../../services/OrderService'
-import { GetTimeUntilDelivery, isInDelivery } from '../../helpers/DateTimeHelper'
+import { GetTimeUntilDelivery, hasPassedOneHour, isInDelivery } from '../../helpers/DateTimeHelper'
 import { ErrorData } from '../../models/ErrorModels'
 
 const OrderItem = (props: OrderItemProperties) => {
@@ -44,7 +43,7 @@ const OrderItem = (props: OrderItemProperties) => {
     event.stopPropagation()
     cancelOrder(order.id)
       .then((response) => {
-        setOrder(response.data)
+        props.onCancel(response.data)
       })
       .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
@@ -64,7 +63,11 @@ const OrderItem = (props: OrderItemProperties) => {
 
   return (
     <TableRow
-      sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: 'pointer' }}
+      sx={{
+        '&:last-child td, &:last-child th': { border: 0 },
+        cursor: 'pointer',
+        backgroundColor: 'var(--cream_color)'
+      }}
       onClick={handleRowClick}
     >
       <TableCell component='th' scope='row'>
@@ -95,9 +98,9 @@ const OrderItem = (props: OrderItemProperties) => {
           : 'Delivered'}
       </TableCell>
       {isCustomer() &&
-        (!order.isCancled && isInDelivery(new Date(order.deliveryTime), currentTime) ? (
+        (!order.isCancled && !hasPassedOneHour(new Date(order.deliveryTime), currentTime) ? (
           <TableCell align='right'>
-            <Button variant='contained' color='primary' onClick={handleOpenDialog}>
+            <Button variant='contained' color='error' onClick={handleOpenDialog}>
               Cancel
             </Button>
           </TableCell>

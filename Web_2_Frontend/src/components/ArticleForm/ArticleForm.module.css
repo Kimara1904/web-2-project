@@ -1,3 +1,4 @@
+@import '../../variables.css';
 .article_div_form{
     display: flex;
     flex-direction: column;
@@ -20,6 +21,9 @@
 .article_form {
     display: flex;
     flex-direction: row;
+    background-color: var(--cream_color);
+    padding: 10px;
+    border-radius: 10px;
 }
 
 .article_inputs {

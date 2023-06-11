@@ -9,9 +9,11 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material'
 import { AxiosError, isAxiosError } from 'axios'
+import { Link } from 'react-router-dom'
 
 import styles from './RegisterForm.module.css'
 import alertStyle from '../../App.module.css'
@@ -332,6 +334,9 @@ const RegisterForm = () => {
         </Alert>
       )}
       <form className={styles.register_form} onSubmit={handleSubmit}>
+        <Typography variant='h4' style={{ marginBottom: '16px' }}>
+          Register
+        </Typography>
         <TextField
           id='RegisterUsername'
           type='text'
@@ -476,9 +481,12 @@ const RegisterForm = () => {
           <FormControlLabel value='Customer' control={<Radio />} label='Customer' />
           <FormControlLabel value='Seller' control={<Radio />} label='Seller' />
         </RadioGroup>
-        <Button type='submit' variant='contained' color='primary'>
-          Register
-        </Button>
+        <div className={styles.register_buttons}>
+          <Link to='/login'>Login</Link>
+          <Button type='submit' variant='contained' color='primary'>
+            Register
+          </Button>
+        </div>
       </form>
     </div>
   )

@@ -41,7 +41,7 @@ const AppContent = () => {
   return (
     <>
       {isUserLoggedIn() && (
-        <AppBar position='fixed'>
+        <AppBar position='fixed' style={{ backgroundColor: 'var(--blue_color)' }}>
           <Toolbar>
             <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
               Web Shop

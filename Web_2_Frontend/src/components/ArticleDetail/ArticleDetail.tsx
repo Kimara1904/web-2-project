@@ -109,24 +109,24 @@ const ArticleDetail = () => {
           {alertError.message}
         </Alert>
       )}
-      <Dialog
-        open={isDialogOpen}
-        onClose={handleCloseDialog}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            {`Are you sure you want to delete artikle: ${(article as Article).id}. ${
-              (article as Article).name
-            }?`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteArticle}>Yes</Button>
-          <Button onClick={handleCloseDialog}>No</Button>
-        </DialogActions>
-      </Dialog>
+      {article && (
+        <Dialog
+          open={isDialogOpen}
+          onClose={handleCloseDialog}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogContent>
+            <DialogContentText id='alert-dialog-description'>
+              {`Are you sure you want to delete artikle: ${article.id}. ${article.name}?`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteArticle}>Yes</Button>
+            <Button onClick={handleCloseDialog}>No</Button>
+          </DialogActions>
+        </Dialog>
+      )}
       <div className={styles.article_detail_link_back}>
         <Link to='/dashboard' onClick={handleDeleteLocalArticle}>
           Back to Dashboard
@@ -148,6 +148,7 @@ const ArticleDetail = () => {
             </Button>
             <Button
               variant='contained'
+              color='error'
               onClick={handleOpenDialog}
               style={{ marginTop: '16px', width: '100px' }}
             >

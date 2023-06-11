@@ -1,7 +1,9 @@
+@import '../../variables.css';
 .div_register_form {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
     height: 100vh;
     margin-top: 50px;
     margin-bottom: 50px;
@@ -11,7 +13,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-items: space-between;
+    justify-content: space-between;
+    width: 50%;
+    background-color: var(--cream_color);
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .text_field {
@@ -21,4 +27,11 @@
 .helper_text {
     white-space: pre-wrap;
     text-align: justify;
+}
+
+.register_buttons {
+    display: flex;
+    align-items: baseline;
+    width: 220px;
+    justify-content: space-between;
 }

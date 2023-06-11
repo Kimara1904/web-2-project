@@ -5,11 +5,13 @@ import { User } from './UserModels'
 
 export interface OrderListProperties {
   orders: Order[]
+  onCancel?: () => void
 }
 
 export interface OrderItemProperties {
   order: Order
   onError: (message: string) => void
+  onCancel: (message: string) => void
 }
 
 export interface SellerVerifyListProperties {

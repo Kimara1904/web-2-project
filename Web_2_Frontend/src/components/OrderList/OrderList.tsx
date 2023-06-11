@@ -2,6 +2,7 @@ import { ReactNode, useState } from 'react'
 
 import {
   Alert,
+  AlertColor,
   AlertTitle,
   Paper,
   Table,
@@ -19,23 +20,36 @@ import OrderItem from './OrderItem'
 import alertStyle from '../../App.module.css'
 
 const OrderList = (prop: OrderListProperties) => {
-  const [alertError, setAlertError] = useState({
+  const [alertShow, setAlertShow] = useState({
     isError: false,
+    severity: '',
     message: ''
   })
 
   const handleError = (message: string) => {
-    setAlertError({
+    setAlertShow({
       isError: true,
+      severity: 'error',
       message: message
     })
+  }
+
+  const handleCancelOrder = (message: string) => {
+    setAlertShow({
+      isError: true,
+      severity: 'success',
+      message: message
+    })
+    if (prop.onCancel) {
+      prop.onCancel()
+    }
   }
 
   let content: ReactNode = null
   if (prop.orders.length === 0) {
     content = (
       <TableBody>
-        <TableRow>
+        <TableRow sx={{ backgroundColor: 'var(--cream_color)' }}>
           <TableCell align='center' colSpan={6}>
             <Typography variant='body2' align='center' style={{ marginBottom: '16px' }}>
               There is no orders
@@ -48,38 +62,55 @@ const OrderList = (prop: OrderListProperties) => {
     content = (
       <TableBody>
         {prop.orders.map((order) => (
-          <OrderItem key={order.id} order={order} onError={handleError} />
+          <OrderItem
+            key={order.id}
+            order={order}
+            onError={handleError}
+            onCancel={handleCancelOrder}
+          />
         ))}
       </TableBody>
     )
   }
   return (
     <>
-      {alertError.isError && (
+      {alertShow.isError && (
         <Alert
           className={alertStyle.alert}
-          severity='error'
+          severity={alertShow.severity as AlertColor}
           onClose={() =>
-            setAlertError((pervState) => ({
+            setAlertShow((pervState) => ({
               ...pervState,
               isError: false
             }))
           }
         >
           <AlertTitle>Error</AlertTitle>
-          {alertError.message}
+          {alertShow.message}
         </Alert>
       )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size='small' aria-label='a dense table'>
-          <TableHead>
+          <TableHead sx={{ backgroundColor: 'var(--blue_color)' }}>
             <TableRow>
-              <TableCell>Id</TableCell>
-              {!isCustomer() && <TableCell align='right'>Buyer</TableCell>}
-              <TableCell align='center'>Items</TableCell>
-              <TableCell align='center'>Total Price</TableCell>
-              <TableCell align='right'>Address</TableCell>
-              <TableCell align='right'>Status</TableCell>
+              <TableCell sx={{ color: 'var(--white_color)' }}>Id</TableCell>
+              {!isCustomer() && (
+                <TableCell align='right' sx={{ color: 'var(--white_color)' }}>
+                  Buyer
+                </TableCell>
+              )}
+              <TableCell align='center' sx={{ color: 'var(--white_color)' }}>
+                Items
+              </TableCell>
+              <TableCell align='center' sx={{ color: 'var(--white_color)' }}>
+                Total Price
+              </TableCell>
+              <TableCell align='right' sx={{ color: 'var(--white_color)' }}>
+                Address
+              </TableCell>
+              <TableCell align='right' sx={{ color: 'var(--white_color)' }}>
+                Status
+              </TableCell>
               {isCustomer() && <TableCell />}
             </TableRow>
           </TableHead>

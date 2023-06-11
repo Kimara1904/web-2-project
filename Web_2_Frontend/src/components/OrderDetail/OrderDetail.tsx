@@ -15,7 +15,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AxiosError, isAxiosError } from 'axios'
 
 import { Order } from '../../models/OrderModels'
@@ -23,7 +23,7 @@ import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
 import styles from './OrderDetail.module.css'
 import alertStyle from '../../App.module.css'
 import { cancelOrder } from '../../services/OrderService'
-import { GetTimeUntilDelivery, isInDelivery } from '../../helpers/DateTimeHelper'
+import { GetTimeUntilDelivery, hasPassedOneHour, isInDelivery } from '../../helpers/DateTimeHelper'
 import { ErrorData } from '../../models/ErrorModels'
 
 const OrderDetail = () => {
@@ -36,14 +36,10 @@ const OrderDetail = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const location = useLocation().state as { order: Order }
 
+  const navigate = useNavigate()
+
   useEffect(() => {
-    const storedOrderData = sessionStorage.getItem('order')
-    if (storedOrderData) {
-      const parsedOrder = JSON.parse(storedOrderData) as Order
-      setOrder(parsedOrder)
-    } else if (location.order) {
-      setOrder(location.order)
-    }
+    setOrder(location.order)
   }, [location.order])
 
   useEffect(() => {
@@ -59,9 +55,8 @@ const OrderDetail = () => {
   const handleCancelOrder = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation()
     cancelOrder(order?.id as number)
-      .then((response) => {
-        setOrder(response.data)
-        sessionStorage.setItem('order', JSON.stringify(response.data))
+      .then(() => {
+        navigate('/dashboard')
       })
       .catch((error: AxiosError<ErrorData>) => {
         if (isAxiosError(error)) {
@@ -101,22 +96,24 @@ const OrderDetail = () => {
           {alertError.message}
         </Alert>
       )}
-      <Dialog
-        open={isDialogOpen}
-        onClose={handleCloseDialog}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogContent>
-          <DialogContentText id='alert-dialog-description'>
-            {`Are you sure you want to cancel order with id: ${(order as Order).id}?`}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelOrder}>Yes</Button>
-          <Button onClick={handleCloseDialog}>No</Button>
-        </DialogActions>
-      </Dialog>
+      {order && (
+        <Dialog
+          open={isDialogOpen}
+          onClose={handleCloseDialog}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogContent>
+            <DialogContentText id='alert-dialog-description'>
+              {`Are you sure you want to cancel order with id: ${order.id}?`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelOrder}>Yes</Button>
+            <Button onClick={handleCloseDialog}>No</Button>
+          </DialogActions>
+        </Dialog>
+      )}
       <div className={styles.order_detail_link_back}>
         <Link to='/dashboard' onClick={handleDeleteLocalOrder}>
           Back to Dashboard
@@ -166,15 +163,16 @@ const OrderDetail = () => {
                     <Typography variant='h6'>Items:</Typography>
                   </TableCell>
                   <TableCell align='right'>
-                    {order?.items.map((item) => {
-                      return (
-                        <Typography key={item.id} variant='body2'>
-                          {`${item.article.name} x ${item.amount}: ${
-                            item.article.price * item.amount
-                          }RSD`}
-                        </Typography>
-                      )
-                    })}
+                    {order?.items &&
+                      order?.items.map((item) => {
+                        return (
+                          <Typography key={item.id} variant='body2'>
+                            {`${item.article.name} x ${item.amount}: ${
+                              item.article.price * item.amount
+                            }RSD`}
+                          </Typography>
+                        )
+                      })}
                   </TableCell>
                 </TableRow>
                 <TableRow>
@@ -203,8 +201,8 @@ const OrderDetail = () => {
         </div>
         {isCustomer() &&
           !order?.isCancled &&
-          isInDelivery(new Date(order?.deliveryTime as string), currentTime) && (
-            <Button variant='contained' color='primary' onClick={handleOpenDialog}>
+          !hasPassedOneHour(new Date(order?.deliveryTime as string), currentTime) && (
+            <Button variant='contained' color='error' onClick={handleOpenDialog}>
               Cancel
             </Button>
           )}

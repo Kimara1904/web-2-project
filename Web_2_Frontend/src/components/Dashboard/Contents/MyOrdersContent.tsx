@@ -17,6 +17,10 @@ const MyOrdersContent = () => {
   })
 
   useEffect(() => {
+    getOrders()
+  }, [])
+
+  const getOrders = () => {
     getMyOrders()
       .then((response) => {
         setOrderList(response.data)
@@ -29,7 +33,7 @@ const MyOrdersContent = () => {
           })
         }
       })
-  }, [])
+  }
 
   return (
     <>
@@ -48,7 +52,7 @@ const MyOrdersContent = () => {
           {alertError.message}
         </Alert>
       )}
-      <OrderList orders={orderList} />
+      <OrderList orders={orderList} onCancel={getOrders} />
     </>
   )
 }

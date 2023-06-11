@@ -49,7 +49,7 @@ const SellerVerifyList = (props: SellerVerifyListProperties) => {
       )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size='small' aria-label='a dense table'>
-          <TableHead>
+          <TableHead sx={{ backgroundColor: 'var(--blue_color)' }}>
             <TableRow>
               <TableCell>Image</TableCell>
               <TableCell>Username</TableCell>
@@ -60,7 +60,7 @@ const SellerVerifyList = (props: SellerVerifyListProperties) => {
               <TableCell align='right' />
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody sx={{ backgroundColor: 'var(--cream_color)' }}>
             {props.sellers.length !== 0 ? (
               props.sellers.map((seller) => {
                 return (

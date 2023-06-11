@@ -1,7 +1,7 @@
 import React, { createRef, useState } from 'react'
 
 import jwtDecode from 'jwt-decode'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AxiosError, isAxiosError } from 'axios'
 import { Button, TextField, Typography } from '@mui/material'
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
@@ -108,9 +108,17 @@ const LoginForm = () => {
             Wrong credentials
           </Typography>
         )}
-        <Button type='submit' variant='contained' color='primary' style={{ marginBottom: '16px' }}>
-          Login
-        </Button>
+        <div className={styles.login_buttons}>
+          <Link to='/register'>Register</Link>
+          <Button
+            type='submit'
+            variant='contained'
+            color='primary'
+            style={{ marginBottom: '16px' }}
+          >
+            Login
+          </Button>
+        </div>
         <GoogleLogin onSuccess={handleSuccess} />
       </form>
     </div>

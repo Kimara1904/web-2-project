@@ -52,23 +52,54 @@ const DashboardContent = () => {
         variant='permanent'
         className={styles.sidebar}
         sx={{
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 110 }
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: 110,
+            backgroundColor: 'var(--blue_color)'
+          }
         }}
       >
         <div className={styles.options}>
           {isAdmin() && (
-            <Button variant='text' onClick={() => handleOptionsClick('all_orders')}>
+            <Button
+              variant='text'
+              sx={{
+                color: 'var(--white_color)',
+                '&:hover': {
+                  backgroundColor: 'var(--cream_color)',
+                  color: 'var(--blue_color)'
+                }
+              }}
+              onClick={() => handleOptionsClick('all_orders')}
+            >
               All Orders
             </Button>
           )}
           {isAdmin() && (
-            <Button variant='text' onClick={() => handleOptionsClick('verified')}>
+            <Button
+              variant='text'
+              sx={{
+                color: 'var(--white_color)',
+                '&:hover': {
+                  backgroundColor: 'var(--cream_color)',
+                  color: 'var(--blue_color)'
+                }
+              }}
+              onClick={() => handleOptionsClick('verified')}
+            >
               Verified sellers
             </Button>
           )}
           {isAdmin() && (
             <Button
               variant='text'
+              sx={{
+                color: 'var(--white_color)',
+                '&:hover': {
+                  backgroundColor: 'var(--cream_color)',
+                  color: 'var(--blue_color)'
+                }
+              }}
               className={styles.dashboard_button}
               onClick={() => handleOptionsClick('unverified')}
             >
@@ -76,27 +107,77 @@ const DashboardContent = () => {
             </Button>
           )}
           {isSellerVerified() && (
-            <Button variant='text' onClick={() => handleOptionsClick('articles')}>
+            <Button
+              variant='text'
+              sx={{
+                color: 'var(--white_color)',
+                '&:hover': {
+                  backgroundColor: 'var(--cream_color)',
+                  color: 'var(--blue_color)'
+                }
+              }}
+              onClick={() => handleOptionsClick('articles')}
+            >
               Articles
             </Button>
           )}
           {isSellerVerified() && (
-            <Button variant='text' onClick={() => handleOptionsClick('in_delivery')}>
+            <Button
+              variant='text'
+              sx={{
+                color: 'var(--white_color)',
+                '&:hover': {
+                  backgroundColor: 'var(--cream_color)',
+                  color: 'var(--blue_color)'
+                }
+              }}
+              onClick={() => handleOptionsClick('in_delivery')}
+            >
               Orders in delivery
             </Button>
           )}
           {isSellerVerified() && (
-            <Button variant='text' onClick={() => handleOptionsClick('delivered')}>
+            <Button
+              variant='text'
+              sx={{
+                color: 'var(--white_color)',
+                '&:hover': {
+                  backgroundColor: 'var(--cream_color)',
+                  color: 'var(--blue_color)'
+                }
+              }}
+              onClick={() => handleOptionsClick('delivered')}
+            >
               Delivered orders
             </Button>
           )}
           {isCustomer() && (
-            <Button variant='text' onClick={() => handleOptionsClick('place_order')}>
+            <Button
+              variant='text'
+              sx={{
+                color: 'var(--white_color)',
+                '&:hover': {
+                  backgroundColor: 'var(--cream_color)',
+                  color: 'var(--blue_color)'
+                }
+              }}
+              onClick={() => handleOptionsClick('place_order')}
+            >
               Place order
             </Button>
           )}
           {isCustomer() && (
-            <Button variant='text' onClick={() => handleOptionsClick('my_orders')}>
+            <Button
+              variant='text'
+              sx={{
+                color: 'var(--white_color)',
+                '&:hover': {
+                  backgroundColor: 'var(--cream_color)',
+                  color: 'var(--blue_color)'
+                }
+              }}
+              onClick={() => handleOptionsClick('my_orders')}
+            >
               My orders
             </Button>
           )}

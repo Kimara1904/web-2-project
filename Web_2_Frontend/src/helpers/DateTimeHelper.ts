@@ -11,3 +11,9 @@ export const GetTimeUntilDelivery = (date: Date, currentTime: Date) => {
     .toString()
     .padStart(2, '0')}`
 }
+
+export const hasPassedOneHour = (date: Date, currentTime: Date) => {
+  const oneHour = 3600000
+
+  return currentTime.getTime() - date.getTime() >= oneHour
+}
