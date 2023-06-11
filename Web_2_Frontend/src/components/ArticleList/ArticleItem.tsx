@@ -1,6 +1,17 @@
 import { useContext, useEffect, useState } from 'react'
 
-import { Alert, AlertTitle, IconButton, Modal, Typography } from '@mui/material'
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  IconButton,
+  Modal,
+  Typography
+} from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import EditIcon from '@mui/icons-material/Edit'
@@ -28,6 +39,7 @@ const ArticleItem = (prop: ArticleItemProperties) => {
     isError: false,
     message: ''
   })
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const navigate = useNavigate()
 
@@ -84,6 +96,15 @@ const ArticleItem = (prop: ArticleItemProperties) => {
       })
   }
 
+  const handleOpenDialog = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation()
+    setIsDialogOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false)
+  }
+
   return (
     <div>
       {alertError.isError && (
@@ -101,6 +122,24 @@ const ArticleItem = (prop: ArticleItemProperties) => {
           {alertError.message}
         </Alert>
       )}
+
+      <Dialog
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            {`Are you sure you want to delete artikle: ${prop.article.id}. ${prop.article.name}?`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteArticle}>Yes</Button>
+          <Button onClick={handleCloseDialog}>No</Button>
+        </DialogActions>
+      </Dialog>
+
       <div
         className={styles.article_item}
         onClick={handleClickArticle}
@@ -139,7 +178,7 @@ const ArticleItem = (prop: ArticleItemProperties) => {
             <IconButton aria-label='edit' onClick={handleClickEdit}>
               <EditIcon />
             </IconButton>
-            <IconButton aria-label='delete' onClick={handleDeleteArticle}>
+            <IconButton aria-label='delete' onClick={handleOpenDialog}>
               <DeleteIcon />
             </IconButton>
           </div>

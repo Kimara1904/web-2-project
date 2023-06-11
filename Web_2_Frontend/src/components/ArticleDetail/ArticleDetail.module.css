@@ -8,6 +8,7 @@
 .article_detail img{
     width: 250px;
     height: 250px;
+    object-fit: cover;
 }
 
 .article_info {

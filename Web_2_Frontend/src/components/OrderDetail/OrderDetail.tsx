@@ -4,6 +4,10 @@ import {
   Alert,
   AlertTitle,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
   Table,
   TableBody,
   TableCell,
@@ -29,6 +33,7 @@ const OrderDetail = () => {
     isError: false,
     message: ''
   })
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const location = useLocation().state as { order: Order }
 
   useEffect(() => {
@@ -71,6 +76,14 @@ const OrderDetail = () => {
     sessionStorage.removeItem('order')
   }
 
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false)
+  }
+
   return (
     <div>
       {alertError.isError && (
@@ -88,6 +101,22 @@ const OrderDetail = () => {
           {alertError.message}
         </Alert>
       )}
+      <Dialog
+        open={isDialogOpen}
+        onClose={handleCloseDialog}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            {`Are you sure you want to cancel order with id: ${(order as Order).id}?`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelOrder}>Yes</Button>
+          <Button onClick={handleCloseDialog}>No</Button>
+        </DialogActions>
+      </Dialog>
       <div className={styles.order_detail_link_back}>
         <Link to='/dashboard' onClick={handleDeleteLocalOrder}>
           Back to Dashboard
@@ -175,7 +204,7 @@ const OrderDetail = () => {
         {isCustomer() &&
           !order?.isCancled &&
           isInDelivery(new Date(order?.deliveryTime as string), currentTime) && (
-            <Button variant='contained' color='primary' onClick={handleCancelOrder}>
+            <Button variant='contained' color='primary' onClick={handleOpenDialog}>
               Cancel
             </Button>
           )}

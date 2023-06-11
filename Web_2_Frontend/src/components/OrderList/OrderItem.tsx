@@ -1,8 +1,18 @@
 import { useEffect, useState } from 'react'
 
-import { Button, TableCell, TableRow } from '@mui/material'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TableCell,
+  TableRow
+} from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { AxiosError, isAxiosError } from 'axios'
+import ReactDOM from 'react-dom'
 
 import { OrderItemProperties } from '../../models/Properties'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
@@ -13,6 +23,7 @@ import { ErrorData } from '../../models/ErrorModels'
 const OrderItem = (props: OrderItemProperties) => {
   const [order, setOrder] = useState(props.order)
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -40,6 +51,15 @@ const OrderItem = (props: OrderItemProperties) => {
           props.onError(error.response?.data.Exception as string)
         }
       })
+  }
+
+  const handleOpenDialog = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation()
+    setIsDialogOpen(true)
+  }
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false)
   }
 
   return (
@@ -77,13 +97,33 @@ const OrderItem = (props: OrderItemProperties) => {
       {isCustomer() &&
         (!order.isCancled && isInDelivery(new Date(order.deliveryTime), currentTime) ? (
           <TableCell align='right'>
-            <Button variant='contained' color='primary' onClick={handleCancelOrder}>
+            <Button variant='contained' color='primary' onClick={handleOpenDialog}>
               Cancel
             </Button>
           </TableCell>
         ) : (
           <TableCell />
         ))}
+      {isDialogOpen &&
+        ReactDOM.createPortal(
+          <Dialog
+            open={isDialogOpen}
+            onClose={handleCloseDialog}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>
+                {`Are you sure you want to cancel order with id: ${props.order.id}?`}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCancelOrder}>Yes</Button>
+              <Button onClick={handleCloseDialog}>No</Button>
+            </DialogActions>
+          </Dialog>,
+          document.body
+        )}
     </TableRow>
   )
 }

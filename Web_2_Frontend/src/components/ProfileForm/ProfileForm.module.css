@@ -41,6 +41,7 @@
 .profile_img_button img {
     width: 250px;
     height: 250px;
+    object-fit: cover;
 }
 
 .profile_password {
