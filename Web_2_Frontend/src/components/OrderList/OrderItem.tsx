@@ -11,7 +11,6 @@ import {
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { AxiosError, isAxiosError } from 'axios'
-import ReactDOM from 'react-dom'
 
 import { OrderItemProperties } from '../../models/Properties'
 import { isAdmin, isCustomer } from '../../helpers/AuthHelper'
@@ -20,7 +19,6 @@ import { GetTimeUntilDelivery, hasPassedOneHour, isInDelivery } from '../../help
 import { ErrorData } from '../../models/ErrorModels'
 
 const OrderItem = (props: OrderItemProperties) => {
-  const [order, setOrder] = useState(props.order)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const navigate = useNavigate()
@@ -36,12 +34,12 @@ const OrderItem = (props: OrderItemProperties) => {
   }, [])
 
   const handleRowClick = () => {
-    navigate('/order_detail', { state: { order: order } })
+    navigate('/order_detail', { state: { order: props.order } })
   }
 
   const handleCancelOrder = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation()
-    cancelOrder(order.id)
+    cancelOrder(props.order.id)
       .then((response) => {
         props.onCancel(response.data)
       })
@@ -71,34 +69,36 @@ const OrderItem = (props: OrderItemProperties) => {
       onClick={handleRowClick}
     >
       <TableCell component='th' scope='row'>
-        {order.id}
+        {props.order.id}
       </TableCell>
-      {!isCustomer() && <TableCell align='right'>{order.buyerUsername}</TableCell>}
+      {!isCustomer() && <TableCell align='right'>{props.order.buyerUsername}</TableCell>}
       <TableCell align='center'>
-        {order.items[0].article.name +
+        {props.order.items[0].articleName +
           ' x ' +
-          order.items[0].amount.toString() +
-          (order.items[1]
+          props.order.items[0].amount.toString() +
+          (props.order.items[1]
             ? ', ' +
-              order.items[1].article.name +
+              props.order.items[1].articleName +
               ' x ' +
-              order.items[1].amount.toString() +
-              (order.items[2] ? '...' : '')
+              props.order.items[1].amount.toString() +
+              (props.order.items[2] ? '...' : '')
             : '')}
       </TableCell>
-      <TableCell align='center'>{order.itemPrice + order.deliveryPrice}</TableCell>
-      <TableCell align='right'>{order.address}</TableCell>
+      <TableCell align='center'>{props.order.itemPrice + props.order.deliveryPrice}</TableCell>
+      <TableCell align='right'>{props.order.address}</TableCell>
       <TableCell align='right'>
-        {order.isCancled
+        {props.order.isCancled
           ? 'Canceled'
-          : isInDelivery(new Date(order.deliveryTime), currentTime)
+          : isInDelivery(new Date(props.order.deliveryTime), currentTime)
           ? isAdmin()
             ? 'In Delivery'
-            : GetTimeUntilDelivery(new Date(order.deliveryTime), currentTime)
+            : GetTimeUntilDelivery(new Date(props.order.deliveryTime), currentTime)
           : 'Delivered'}
       </TableCell>
       {isCustomer() &&
-        (!order.isCancled && !hasPassedOneHour(new Date(order.deliveryTime), currentTime) ? (
+        (!props.order.isCancled &&
+        isInDelivery(new Date(props.order.deliveryTime), currentTime) &&
+        !hasPassedOneHour(new Date(props.order.deliveryTime), currentTime) ? (
           <TableCell align='right'>
             <Button variant='contained' color='error' onClick={handleOpenDialog}>
               Cancel
@@ -107,26 +107,24 @@ const OrderItem = (props: OrderItemProperties) => {
         ) : (
           <TableCell />
         ))}
-      {isDialogOpen &&
-        ReactDOM.createPortal(
-          <Dialog
-            open={isDialogOpen}
-            onClose={handleCloseDialog}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <DialogContent>
-              <DialogContentText id='alert-dialog-description'>
-                {`Are you sure you want to cancel order with id: ${props.order.id}?`}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCancelOrder}>Yes</Button>
-              <Button onClick={handleCloseDialog}>No</Button>
-            </DialogActions>
-          </Dialog>,
-          document.body
-        )}
+      {isDialogOpen && (
+        <Dialog
+          open={isDialogOpen}
+          onClose={handleCloseDialog}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogContent>
+            <DialogContentText id='alert-dialog-description'>
+              {`Are you sure you want to cancel order with id: ${props.order.id}?`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelOrder}>Yes</Button>
+            <Button onClick={handleCloseDialog}>No</Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </TableRow>
   )
 }

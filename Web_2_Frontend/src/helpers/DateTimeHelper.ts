@@ -15,5 +15,5 @@ export const GetTimeUntilDelivery = (date: Date, currentTime: Date) => {
 export const hasPassedOneHour = (date: Date, currentTime: Date) => {
   const oneHour = 3600000
 
-  return currentTime.getTime() - date.getTime() >= oneHour
+  return date.getTime() - currentTime.getTime() < oneHour
 }

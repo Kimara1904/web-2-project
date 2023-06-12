@@ -66,10 +66,10 @@ namespace Web_2_Online_Shop.Controllers
 
         [Authorize(Roles = "Customer")]
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<OrderDTO>> Cancle(int id)
+        public async Task<ActionResult<string>> Cancel(int id)
         {
             var buyerId = int.Parse(User.Claims.First(c => c.Type == "UserId").Value);
-            await _orderService.Cancle(id, buyerId);
+            await _orderService.Cancel(id, buyerId);
 
             return Ok(string.Format("Successfully cancled order with id: {0}", id));
         }

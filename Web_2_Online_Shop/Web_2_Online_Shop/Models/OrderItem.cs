@@ -3,7 +3,8 @@
     public class OrderItem : EntityBase
     {
         public int ArticleId { get; set; }
-        public virtual Article Article { get; set; } = null!;
+        public string ArticleName { get; set; } = null!;
+        public double ArticlePrice { get; set; }
         public int Amount { get; set; }
         public int OrderId { get; set; }
         public virtual Order Order { get; set; } = null!;

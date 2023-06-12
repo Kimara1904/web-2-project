@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public int Amount { get; set; }
-        public ArticleDTO Article { get; set; } = null!;
+        public string ArticleName { get; set; } = null!;
+        public double ArticlePrice { get; set; }
     }
 }

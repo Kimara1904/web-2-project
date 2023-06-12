@@ -9,6 +9,5 @@
         public byte[]? Image { get; set; }
         public virtual User? Seller { get; set; }
         public int SellerId { get; set; }
-        public virtual List<OrderItem>? Items { get; set; }
     }
 }

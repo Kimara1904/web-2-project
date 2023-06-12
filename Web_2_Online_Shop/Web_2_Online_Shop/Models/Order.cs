@@ -6,7 +6,8 @@
         public string Address { get; set; } = null!;
         public DateTime DeliveryTime { get; set; }
         public string? Comment { get; set; }
-        public bool IsCancled { get; set; }
+        public bool IsCanceled { get; set; }
+        public double DeliveryPrice { get; set; }
         public virtual User? Buyer { get; set; }
         public int BuyerId { get; set; }
     }

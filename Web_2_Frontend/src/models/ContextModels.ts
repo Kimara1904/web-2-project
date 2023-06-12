@@ -16,4 +16,5 @@ export interface CartContextModel {
   onAdd: (item: PickedItemInfo) => void
   onRemove: (id: number) => void
   onChange: (id: number, amount: number) => void
+  onRemoveAll: () => void
 }

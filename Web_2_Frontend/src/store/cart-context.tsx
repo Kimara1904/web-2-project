@@ -13,6 +13,9 @@ const CartContext = React.createContext<CartContextModel>({
   },
   onChange: () => {
     return
+  },
+  onRemoveAll: () => {
+    return
   }
 })
 
@@ -39,13 +42,18 @@ export const CartContextProvider: React.FC<ProviderModel> = ({ children }) => {
     })
   }
 
+  const handleRemoveAll = () => {
+    setItemList([])
+  }
+
   return (
     <CartContext.Provider
       value={{
         items: itemList,
         onAdd: handleAddItem,
         onRemove: handleRemoveItem,
-        onChange: handleChangeItem
+        onChange: handleChangeItem,
+        onRemoveAll: handleRemoveAll
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { AxiosError, isAxiosError } from 'axios'
 import { Alert, AlertTitle } from '@mui/material'
@@ -30,6 +30,11 @@ const UnverifiedSellerContent = () => {
         }
       })
   }
+
+  useEffect(() => {
+    getUnverifiedSellers()
+  }, [])
+
   return (
     <>
       {alertError.isError && (

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web_2_Online_Shop.Infrastructure;
 
@@ -11,9 +12,11 @@ using Web_2_Online_Shop.Infrastructure;
 namespace Web_2_Online_Shop.Migrations
 {
     [DbContext(typeof(ShopDataBaseContext))]
-    partial class ShopDataBaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230611211038_ModifyItemAndOrderMigration")]
+    partial class ModifyItemAndOrderMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,6 +127,8 @@ namespace Web_2_Online_Shop.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArticleId");
+
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
@@ -193,7 +198,7 @@ namespace Web_2_Online_Shop.Migrations
                             Id = 1,
                             BirthDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@admin.com",
-                            Password = "AQAAAAEAACcQAAAAEOetzZYYkYdnsMF7nmhhPWTOBN/J494bh/jki/do5aigOWvex1kjAj6CY0/WbUhFrA==",
+                            Password = "AQAAAAEAACcQAAAAEBCdUk7xqdv1kB/A2rRjIDFusxxOf4sjy9G+czmR8awqaeM4DorAXAzPC4A5MwOeXw==",
                             Role = "Admin",
                             Username = "Admin",
                             Verified = "Accepted"
@@ -224,6 +229,12 @@ namespace Web_2_Online_Shop.Migrations
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.OrderItem", b =>
                 {
+                    b.HasOne("Web_2_Online_Shop.Models.Article", null)
+                        .WithMany("Items")
+                        .HasForeignKey("ArticleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Web_2_Online_Shop.Models.Order", "Order")
                         .WithMany("Items")
                         .HasForeignKey("OrderId")
@@ -231,6 +242,11 @@ namespace Web_2_Online_Shop.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Web_2_Online_Shop.Models.Article", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Web_2_Online_Shop.Models.Order", b =>

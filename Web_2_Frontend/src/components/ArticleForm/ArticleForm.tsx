@@ -89,6 +89,14 @@ const ArticleForm = (props: ArticleFormProperties) => {
     }
   }
 
+  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+  }
+
+  const handleChangeDescription = (event: ChangeEvent<HTMLInputElement>) => {
+    setDescription(event.target.value)
+  }
+
   const handlePriceChange = (event: ChangeEvent<HTMLInputElement>) => {
     let newValue = event.target.value.trim()
 
@@ -196,6 +204,7 @@ const ArticleForm = (props: ArticleFormProperties) => {
     formData.append('name', request.name as string)
     formData.append('price', request.price.toString())
     formData.append('amount', request.amount.toString())
+    formData.append('description', request.description as string)
     if (request.imageFile) {
       formData.append('imageFile', base64ToBlob(request.imageFile))
     }
@@ -295,10 +304,11 @@ const ArticleForm = (props: ArticleFormProperties) => {
               helperText={errors.isNameError && errorNameMessages}
               value={name}
               onBlur={handleBlurName}
+              onChange={handleChangeName}
               onFocus={() =>
                 setErrors((prevErrors) => ({
                   ...prevErrors,
-                  isUsernameError: false
+                  isNameError: false
                 }))
               }
               style={{ marginBottom: '16px' }}
@@ -353,6 +363,7 @@ const ArticleForm = (props: ArticleFormProperties) => {
               helperText={errors.isDescriptionError && 'Descriptor is required'}
               value={description}
               onBlur={handleBlurDescription}
+              onChange={handleChangeDescription}
               onFocus={() =>
                 setErrors((prevErrors) => ({
                   ...prevErrors,

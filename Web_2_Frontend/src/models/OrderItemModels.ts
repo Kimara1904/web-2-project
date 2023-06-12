@@ -3,7 +3,8 @@ import { Article } from './ArticleModels'
 export interface OrderItem {
   id: number
   amount: number
-  article: Article
+  articleName: string
+  articlePrice: number
 }
 
 export interface CreateItem {

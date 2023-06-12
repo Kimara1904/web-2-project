@@ -10,6 +10,6 @@
         public string Address { get; set; } = null!;
         public string? Comment { get; set; }
         public DateTime DeliveryTime { get; set; }
-        public bool IsCancled { get; set; }
+        public bool IsCanceled { get; set; }
     }
 }

@@ -64,10 +64,15 @@ const SellerVerifyItem = (props: SellerVerifyItemProperties) => {
       <TableCell align='right'>
         {!props.verified && (
           <>
-            <Button variant='contained' onClick={handleAcceptClick}>
+            <Button variant='contained' color='success' onClick={handleAcceptClick}>
               Accept
             </Button>
-            <Button variant='contained' onClick={handleDenyClick}>
+            <Button
+              variant='contained'
+              color='error'
+              onClick={handleDenyClick}
+              style={{ marginLeft: '16px' }}
+            >
               Denied
             </Button>
           </>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import {
   Alert,
@@ -25,6 +25,7 @@ import alertStyle from '../../App.module.css'
 import { cancelOrder } from '../../services/OrderService'
 import { GetTimeUntilDelivery, hasPassedOneHour, isInDelivery } from '../../helpers/DateTimeHelper'
 import { ErrorData } from '../../models/ErrorModels'
+import DashContext from '../../store/dashboard-context'
 
 const OrderDetail = () => {
   const [order, setOrder] = useState<Order>()
@@ -36,6 +37,7 @@ const OrderDetail = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const location = useLocation().state as { order: Order }
 
+  const contentContext = useContext(DashContext)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -50,12 +52,13 @@ const OrderDetail = () => {
     return () => {
       clearInterval(intervalId)
     }
-  }, [])
+  }, [currentTime, order?.deliveryTime, order?.isCancled])
 
   const handleCancelOrder = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation()
     cancelOrder(order?.id as number)
       .then(() => {
+        contentContext.setContent('my_orders')
         navigate('/dashboard')
       })
       .catch((error: AxiosError<ErrorData>) => {
@@ -167,8 +170,8 @@ const OrderDetail = () => {
                       order?.items.map((item) => {
                         return (
                           <Typography key={item.id} variant='body2'>
-                            {`${item.article.name} x ${item.amount}: ${
-                              item.article.price * item.amount
+                            {`${item.articleName} x ${item.amount}: ${
+                              item.articlePrice * item.amount
                             }RSD`}
                           </Typography>
                         )
@@ -201,6 +204,7 @@ const OrderDetail = () => {
         </div>
         {isCustomer() &&
           !order?.isCancled &&
+          isInDelivery(new Date(order?.deliveryTime as string), currentTime) &&
           !hasPassedOneHour(new Date(order?.deliveryTime as string), currentTime) && (
             <Button variant='contained' color='error' onClick={handleOpenDialog}>
               Cancel
